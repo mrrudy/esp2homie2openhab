@@ -1,0 +1,34 @@
+Group homie "Homie"
+
+String homie_name "Homie name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$name:state:REGEX((.*))]" }
+Switch homie_online "Homie przelacznik online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$online:state:JS(homie-tf.js)"}
+
+Switch  testowySwitch "relay" <light> (SonoffBedLight,HouseLight) { 
+		mqtt=">[nasmqtt:homie/5ccf7f2c12d1/relay/on/set:command:ON:true],
+			  >[nasmqtt:homie/5ccf7f2c12d1/relay/on/set:command:OFF:false],
+  			  <[nasmqtt:homie/5ccf7f2c12d1/relay/on:state:JS(homie-tf.js)]
+  			  "
+}
+Number	backroomTemperature	"Family Room Temperature [%.1f °C]"	<temperature> {
+	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/temperature/degrees:state:default]"
+}
+
+Number	testtemp	"testtemp [%.1f °C]"	<temperature> {
+	mqtt="<[nasmqtt:test/temp:state:default]"
+}
+
+String sonoff1_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f9f306c/$name:state:REGEX((.*))]" }
+Switch sonoff1_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f9f306c/$online:state:JS(homie-tf.js)"}
+
+Switch  sonoff1_left_switch "relay" <switch> (Group1,Group2) { 
+		mqtt=">[nasmqtt:homie/5ccf7f9f306c/left/on/set:command:ON:true],
+			  >[nasmqtt:homie/5ccf7f9f306c/left/on/set:command:OFF:false],
+  			  <[nasmqtt:homie/5ccf7f9f306c/left/on:state:JS(homie-tf.js)]
+  			  "
+}
+Switch  sonoff1_right_switch "relay" <switch> (Group1,Group2) { 
+		mqtt=">[nasmqtt:homie/5ccf7f9f306c/right/on/set:command:ON:true],
+			  >[nasmqtt:homie/5ccf7f9f306c/right/on/set:command:OFF:false],
+  			  <[nasmqtt:homie/5ccf7f9f306c/right/on:state:JS(homie-tf.js)]
+  			  "
+}

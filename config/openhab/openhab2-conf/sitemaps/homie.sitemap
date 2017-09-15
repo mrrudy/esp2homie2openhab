@@ -1,0 +1,14 @@
+sitemap homie label="Kalinowa"
+{
+	Text item=homie_name
+	Text item=homie_online icon="switch" visibility=[homie_online==OFF] 
+    Switch item=testowySwitch visibility=[homie_online==ON]
+    Text item=backroomTemperature visibility=[homie_online==ON]
+
+
+	Text item=sonoff1_name
+	Text item=sonoff1_online icon="switch" visibility=[sonoff1_online==OFF] 
+    Switch item=sonoff1_left_switch visibility=[sonoff1_online==ON]
+    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
+
+}
