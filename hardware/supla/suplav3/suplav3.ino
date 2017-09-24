@@ -1,7 +1,8 @@
 #include <Homie.h>
 
 #define DEBUG_ENABLED 1
-#define RELAYPIN 5
+#define RELAYPIN1 5
+#define RELAYPIN2 13
 
 /*
 #include "DHT.h"
@@ -18,12 +19,22 @@ unsigned long lastTemperatureSent = 0;
 int switch_state; //holds the state in which the switch should be
 
 HomieNode relay1("1", "switch");
+HomieNode relay2("2", "switch");
 //HomieNode temperatureNode("temperature", "temperature");
 
 
 
 bool relay1OnHandler(const HomieRange& range, const String& value) {
-  int mask = B01;  //relay number 1 (left)
+  int mask = RELAYPIN1;  //relay number 1 (left)
+  if(relaySwitch(mask, value)) {
+    relay1.setProperty("on").send(value); // TODO: change to self
+    return true;
+  }
+  else return false;
+}
+
+bool relay2OnHandler(const HomieRange& range, const String& value) {
+  int mask = RELAYPIN2;  //relay number 1 (left)
   if(relaySwitch(mask, value)) {
     relay1.setProperty("on").send(value); // TODO: change to self
     return true;
@@ -32,16 +43,20 @@ bool relay1OnHandler(const HomieRange& range, const String& value) {
 }
 
 bool relaySwitch(int mask, const String& value) {
+  #if DEBUG_ENABLED
+   char buffer[50];
+  #endif
   if (value != "true" && value != "false") return false;
   bool on = (value == "true");
   if(on) {
-    digitalWrite(RELAYPIN, HIGH); //turns on relay
+    digitalWrite(mask, HIGH); //turns on relay
   }
   else {
-    digitalWrite(RELAYPIN, LOW);
+    digitalWrite(mask, LOW);
   }
   #if DEBUG_ENABLED
-  Homie.getMqttClient().publish("DEBUG/sonoff", 1, false, "changing switch state");
+  sprintf(buffer, "changing switch no. %d to state: %s", mask, on ? "ON" : "OFF");
+  Homie.getMqttClient().publish("DEBUG/sonoff", 1, false, buffer);
   #endif
   return (true);
 }
@@ -58,7 +73,8 @@ void buttonLoop() {
 }
 
 void setup() {
-  pinMode(RELAYPIN, OUTPUT);
+  pinMode(RELAYPIN1, OUTPUT);
+  pinMode(RELAYPIN2, OUTPUT);
 //  dht.begin();
 
 //########## HOMIE stuff
@@ -69,6 +85,8 @@ void setup() {
   
   relay1.advertise("on").settable(relay1OnHandler);
   relay1OnHandler({true,0}, "false"); //sets the default state of the switch. it does not report to mqtt! TODO: report to the mqtt initial state of the switch
+  relay2.advertise("on").settable(relay1OnHandler);
+  relay2OnHandler({true,0}, "false"); //sets the default state of the switch. it does not report to mqtt! TODO: report to the mqtt initial state of the switch
 /*  
   temperatureNode.setProperty("unit").send("c");
   temperatureNode.advertise("unit");
