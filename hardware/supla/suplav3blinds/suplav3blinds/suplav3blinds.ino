@@ -16,8 +16,10 @@
 unsigned long timer=0; //timer that marks time in future till when the blinds should roll; if 0 means there is no movement
 bool up_direction=true; //direction of the blinds movement
 unsigned long move_start=0; //stores time when the movement started
-unsigned long fullmove=10 * 1000UL; //how long does it take for full blinds move
+const unsigned long fullmove=10 * 1000UL; //how long does it take for full blinds move
 long blinds_position=0; //position of blinds as time in ms from full open; 0 means position is unknown
+const int REPORT_INTERVAL = 1 * 1000UL; //how often I should report the blinds status during move
+unsigned long lastReportSent=0;
 
 OneButton button1(BUTTONPIN1, true);
 OneButton button2(BUTTONPIN2, true);
@@ -30,7 +32,7 @@ HomieNode button3Node("b3", "button");
 bool relay1_state=false; //holds the state in which the relay1 is
 bool relay2_state=false; //holds the state in which the relay2 is
 
-HomieNode blinds("position", "blinds");
+HomieNode blinds("blinds1", "blinds");
 
 void click1() {
   #if DEBUG_ENABLED
@@ -46,7 +48,50 @@ void click1() {
 } // click1
 
 bool blindsMoveHandler(const HomieRange& range, const String& value) {
-  
+int new_position_in_percent=0;
+
+if(timer!=0){ //if blinds are moving stop them first
+  moveBlindsSTOP();
+}
+if(value=="STOP")return(true);
+if((value=="UP")||(value=="DOWN")) {
+    new_position_in_percent=(value=="UP")?0:100;
+}else new_position_in_percent=value.toInt();
+
+    #if DEBUG_ENABLED
+      char buffer[100];
+      sprintf(buffer, "received new blinds position request: %d %%", new_position_in_percent);
+      Homie.getMqttClient().publish(DEBUG_PREFIX BOARD_NAME, 1, false, buffer);
+    #endif
+    
+    moveBlindsToPosition((unsigned long)(fullmove*new_position_in_percent)/100);
+}
+
+void moveBlindsToPosition(unsigned long req_position){
+  if(req_position<=1){
+    moveBlindsUP(1.2* fullmove);
+    return;
+  }
+  if(req_position>=fullmove){
+    moveBlindsDOWN(1.2* fullmove);
+    return;
+  }
+  if(blinds_position){
+    if(req_position<blinds_position){
+      moveBlindsUP(blinds_position-req_position);
+      return;
+    }
+    else {
+      moveBlindsDOWN(req_position-blinds_position);
+      return;
+    }
+  }
+  else{
+    #if DEBUG_ENABLED
+      Homie.getMqttClient().publish(DEBUG_PREFIX BOARD_NAME, 1, false, "not implemented moving to a position when current position is unknown, try moving blinds full open/close first");
+    #endif
+    //TODO: implement first full open/close then going to a position
+  }
 }
 
 void moveBlindsUP(unsigned long how_long){
@@ -183,9 +228,16 @@ void loop() {
   button1.tick();
   button2.tick();
   button3.tick();
-  unsigned long now = millis();
-  if(timer!=0 && timer<=now){ //if we reached a point in future when the blinds should stop moving
+  if(timer!=0 && timer<=millis()){ //if we reached a point in future when the blinds should stop moving
       moveBlindsSTOP(); //we stop them
+  }
+  if (timer!=0 && (millis() - lastReportSent >= REPORT_INTERVAL) && (blinds_position)) {
+    unsigned long delta=millis()-move_start; //calculate the delta of movement
+    long current_blinds_position=blinds_position+(up_direction ? (-delta) : delta); //substract the delta if blinds were going up, add if they were going down
+    if(current_blinds_position<=0) current_blinds_position=1;
+    if(current_blinds_position>fullmove) current_blinds_position=fullmove;
+    blinds.setProperty("position").send(String(current_blinds_position*100/fullmove)); //send the position
+    lastReportSent=millis(); 
   }
 }
 
