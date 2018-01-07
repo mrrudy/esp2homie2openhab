@@ -19,7 +19,11 @@ HomieNode button3Node("b3", "button");
 
 HomieNode blinds("blinds1", "blinds");
 
+<<<<<<< HEAD
 Shutters shutters; //blebleble
+=======
+Shutters shutters; //commit from webpage
+>>>>>>> aa0fee6b69eec49b6fc2e8bb1c50414afc4a1172
 
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
         relaySwitch(POWERRELAY,!POWERLINE); //whatever we will do first we stop the shutters from moving
