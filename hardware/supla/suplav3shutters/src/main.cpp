@@ -19,7 +19,7 @@ HomieNode button3Node("b3", "button");
 
 HomieNode blinds("blinds1", "blinds");
 
-Shutters shutters; //blebleble
+Shutters shutters; //
 
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
         relaySwitch(POWERRELAY,!POWERLINE); //whatever we will do first we stop the shutters from moving
