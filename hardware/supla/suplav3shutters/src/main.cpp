@@ -45,6 +45,7 @@ void readInEeprom(char* dest, byte length) {
         for (byte i = 0; i < length; i++) {
                 dest[i] = EEPROM.read(eepromOffset + i);
         }
+        Debugf("read from eeprom position: %d %%", dest);
 }
 
 void shuttersWriteStateHandler(Shutters* shutters, const char* state, byte length) {
@@ -57,8 +58,10 @@ void shuttersWriteStateHandler(Shutters* shutters, const char* state, byte lengt
 }
 
 void onShuttersLevelReached(Shutters* shutters, byte level) {
-        Debugf("shutters reached level: %d %%", level);
-        blinds.setProperty("position").send(String(level)); //send the position
+        if(level%10==0) {
+//        Debugf("shutters reached level: %d %%", level);
+                blinds.setProperty("position").send(String(level)); //send the position
+        }
 }
 
 bool blindsMoveHandler(const HomieRange& range, const String& value) {
@@ -77,7 +80,7 @@ bool blindsMoveHandler(const HomieRange& range, const String& value) {
 }
 
 bool relaySwitch(int whichRelay, int channel) {
-        digitalWrite(whichRelay, channel); //HIGH/LOW = LEFT/RIGHT
+        digitalWrite(whichRelay, channel);
         Debugf("changing switch on pin no. %d to state: %d", whichRelay, channel);
         return (true);
 }
@@ -168,7 +171,7 @@ void setup() {
 //########## HOMIE stuff
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
         Homie.setLedPin(15, HIGH);
-        Homie_setFirmware(BOARD_NAME "-" BOARD_FUTURES, "1.0.0");
+        Homie_setFirmware(BOARD_NAME "-" BOARD_FUTURES, VERSION);
         Homie.setup();
 
         blinds.setProperty("position").send("NaN");
@@ -209,7 +212,8 @@ void setup() {
         .setCourseTime(upCourseTime, downCourseTime)
         .onLevelReached(onShuttersLevelReached)
         .begin()
-        .setLevel(30); // Go to 30%
+//        .setLevel(30) // Go to 30%
+        ;
 }
 
 void loop() {

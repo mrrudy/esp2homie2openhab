@@ -1,5 +1,6 @@
 #define BOARD_NAME "suplav3"
 #define BOARD_FUTURES "1BLINDS_3BUTTON_OTA"
+#define VERSION "0.91"
 #define DEBUG_PREFIX "DEBUG/"
 #define DEBUG_ENABLED 1
 #define LEFTRELAYPIN 5
