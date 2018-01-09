@@ -22,21 +22,23 @@ HomieNode blinds("blinds1", "blinds");
 Shutters shutters; //
 
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
-        relaySwitch(POWERRELAY,!POWERLINE); //whatever we will do first we stop the shutters from moving
+        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
         switch (operation) {
         case ShuttersOperation::UP:
                 Debug("Shutters going up.");
-                relaySwitch(SHUTTERRELAY,UPLINE); //switch the motor relay to the line with up shutters
-                relaySwitch(POWERRELAY,POWERLINE); //switch the power on to the relay with motors
+                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
+                relaySwitch(UPRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
                 break;
         case ShuttersOperation::DOWN:
                 Debug("Shutters going down.");
-                relaySwitch(SHUTTERRELAY,!UPLINE); //switch the motor relay to the line with down shutters
-                relaySwitch(POWERRELAY,POWERLINE); //switch the power on to the relay with motors
+                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
+                relaySwitch(DOWNRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
                 break;
         case ShuttersOperation::HALT:
                 Debug("Shutters stop.");
-                //already stopped at the start of the function so we do nothing
+                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
                 break;
         }
 }
@@ -154,8 +156,11 @@ void longPressStart3() {
 } // longPressStop3
 
 void setup() {
-        pinMode(POWERRELAY, OUTPUT);
-        pinMode(SHUTTERRELAY, OUTPUT);
+        pinMode(UPRELAY, OUTPUT);
+        pinMode(DOWNRELAY, OUTPUT);
+
+        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
 
         button1.attachClick(click1);
         button1.attachDoubleClick(doubleclick1);
