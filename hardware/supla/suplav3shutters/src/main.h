@@ -1,3 +1,4 @@
+#include "include/family_common/board.h"
 #define BOARD_NAME "suplav3"
 #define BOARD_FUTURES "1BLINDS_3BUTTON_OTA"
 #define VERSION "0.92"
