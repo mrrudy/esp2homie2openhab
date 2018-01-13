@@ -11,6 +11,7 @@
 #define LEFT HIGH
 #define RIGHT LOW
 
+
 #define UPRELAY LEFTRELAYPIN
 #define DOWNRELAY RIGHTRELAYPIN
 #define ENGINELINE LEFT //to which side the cable that connects power to the SHUTTERELAY is connected (should be the Normally Open channel)
