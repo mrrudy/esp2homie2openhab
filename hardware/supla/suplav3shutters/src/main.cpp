@@ -1,9 +1,9 @@
 #include <Homie.h>
-#include "OneButton.h"
-#include "main.h"
+#include <OneButton.h>
 #include <EEPROM.h>
 #include <Shutters.h>
-#include "include/common/log.h"
+
+#include "main.h"
 #include "include/common/relay.h"
 
 
@@ -174,7 +174,7 @@ void setup() {
 
 //########## HOMIE stuff
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
-        Homie.setLedPin(15, HIGH);
+        Homie.setLedPin(LEDPIN, HIGH);
         Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
         Homie.setup();
 
