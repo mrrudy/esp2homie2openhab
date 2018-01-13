@@ -3,6 +3,9 @@
 #include "main.h"
 #include <EEPROM.h>
 #include <Shutters.h>
+#include "include/common/log.h"
+#include "include/common/relay.h"
+
 
 const byte eepromOffset = 0;
 const unsigned long upCourseTime = 21 * 1000;
@@ -81,11 +84,7 @@ bool blindsMoveHandler(const HomieRange& range, const String& value) {
         shutters.setLevel(new_position_in_percent);
 }
 
-bool relaySwitch(int whichRelay, int channel) {
-        digitalWrite(whichRelay, channel);
-        Debugf("changing switch on pin no. %d to state: %d", whichRelay, channel);
-        return (true);
-}
+
 
 // This function will be called when the button1 was pressed shortly.
 void click1() {
