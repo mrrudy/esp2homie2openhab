@@ -1,4 +1,4 @@
-#define BOARD_NAME "suplav3_shutters"
+#define BOARD_NAME "shutters"
 #define BOARD_FUTURES "1SHUTTERS_3BUTTON_OTA"
 #define VERSION "0.93"
 

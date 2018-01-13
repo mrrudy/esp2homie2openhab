@@ -10,6 +10,8 @@
 #define LEFT HIGH       //left channel is NO and activated by HIGH
 #define RIGHT LOW
 
+#define LEDPIN 15
+
 #define BOARD_FAMILY_NAME "suplav3"
 
 #endif /*family_board_H_*/

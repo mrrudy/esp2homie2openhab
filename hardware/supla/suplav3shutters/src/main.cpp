@@ -175,7 +175,7 @@ void setup() {
 //########## HOMIE stuff
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
         Homie.setLedPin(15, HIGH);
-        Homie_setFirmware(BOARD_NAME "-" BOARD_FUTURES, VERSION);
+        Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
         Homie.setup();
 
         blinds.setProperty("position").send("NaN");
