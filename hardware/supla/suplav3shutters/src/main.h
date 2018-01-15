@@ -1,6 +1,6 @@
 #define BOARD_NAME "suplav3"
 #define BOARD_FUTURES "1BLINDS_3BUTTON_OTA"
-#define VERSION "0.92"
+#define VERSION "0.93"
 #define DEBUG_PREFIX "DEBUG/"
 #define DEBUG_ENABLED 1
 #define LEFTRELAYPIN 5
@@ -11,8 +11,8 @@
 #define LEFT HIGH
 #define RIGHT LOW
 
-#define UPRELAY LEFTRELAYPIN
-#define DOWNRELAY RIGHTRELAYPIN
+#define DOWNRELAY LEFTRELAYPIN
+#define UPRELAY RIGHTRELAYPIN
 #define ENGINELINE LEFT //to which side the cable that connects power to the SHUTTERELAY is connected (should be the Normally Open channel)
 //#define UPLINE LEFT //to which side of the SHUTTERRELAY the up motor is connected to
 

@@ -101,7 +101,7 @@ void buttonLoop() {
 
 void setup() {
   Homie.disableLogging();
-  Homie_setFirmware("sonoff_dual_switch_OTA", "1.0.6");
+  Homie_setFirmware("1M64qioOTA", "0.3");
   relay1.advertise("on").settable(relay1OnHandler);
   relay2.advertise("on").settable(relay2OnHandler);
   Homie.setLedPin(13, HIGH);
