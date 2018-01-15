@@ -38,7 +38,6 @@ void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
 }
 
 void readInEeprom(char* dest, byte length) {
-  dest[0]=0; return;
         for (byte i = 0; i < length; i++) {
                 dest[i] = EEPROM.read(eepromOffset + i);
         }
@@ -46,7 +45,6 @@ void readInEeprom(char* dest, byte length) {
 }
 
 void shuttersWriteStateHandler(Shutters* shutters, const char* state, byte length) {
-return;
         for (byte i = 0; i < length; i++) {
                 EEPROM.write(eepromOffset + i, state[i]);
     #ifdef ESP8266
