@@ -1,6 +1,5 @@
 #include <Homie.h>
 
-
 #define DEBUG_ENABLED 1
 
 HomieNode relay1("left", "switch");
@@ -60,7 +59,7 @@ void buttonLoop() {
             if (Serial.read() == 0x04) {
                 value = Serial.read();
                 if (Serial.read() == 0xA1) {
-
+ 
                     // RELAYs and BUTTONs are synchonized in the SIL F330
                     // The on-board BUTTON2 should toggle RELAY0 value
                     // Since we are not passing back RELAY2 value
@@ -70,7 +69,7 @@ void buttonLoop() {
                     sprintf(buffer, "received on serial: %#08x", value);
                     Homie.getMqttClient().publish("DEBUG/sonoff", 1, false, buffer);
                     #endif
-                    if ((value & 4) == 4) {
+                    if ((value & 4) == 4) { 
                       value = value ^ 1;
                       relay1OnHandler({true,0}, "false"); //sets the default state of the switch. it does not report to mqtt! TODO: report to the mqtt initial state of the switch
                       relay2OnHandler({true,0}, "false");
@@ -82,27 +81,27 @@ void buttonLoop() {
                     // the synchronization going mad
                     // This loop is generic for any PSB-04 module
 /*                    for (unsigned int i=0; i<relayCount(); i++) {
-
+ 
                         bool status = (value & (1 << i)) > 0;
-
+ 
                         // relayStatus returns true if the status has changed
                         if (relayStatus(i, status)) break;
-
+ 
                     }*/
-
+ 
                 }
             }
         }
-
+ 
     }
-
+ 
 }
 
 
 
 void setup() {
   Homie.disableLogging();
-  Homie_setFirmware("1M64qioOTA", "0.3");
+  Homie_setFirmware("1M64qioOTA", "0.4");
   relay1.advertise("on").settable(relay1OnHandler);
   relay2.advertise("on").settable(relay2OnHandler);
   Homie.setLedPin(13, HIGH);
