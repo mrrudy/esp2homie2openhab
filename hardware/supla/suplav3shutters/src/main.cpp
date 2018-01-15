@@ -24,24 +24,28 @@ HomieNode blinds("blinds1", "blinds");
 
 Shutters shutters; //
 
+byte whichRelayIsWorking = UPRELAY;
+
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
-        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
-        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+//        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+//        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
         switch (operation) {
         case ShuttersOperation::UP:
                 Debug("Shutters going up.");
-                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
+//                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
                 relaySwitch(UPRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
+                whichRelayIsWorking=UPRELAY;
                 break;
         case ShuttersOperation::DOWN:
                 Debug("Shutters going down.");
-                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
+//                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
                 relaySwitch(DOWNRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
+                whichRelayIsWorking=DOWNRELAY;
                 break;
         case ShuttersOperation::HALT:
                 Debug("Shutters stop.");
-                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
-                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+                relaySwitch(whichRelayIsWorking,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+//                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
                 break;
         }
 }
