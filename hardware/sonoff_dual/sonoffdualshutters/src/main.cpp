@@ -1,20 +1,15 @@
 #include <Homie.h>
-#include <OneButton.h>
 #include <EEPROM.h>
 #include <Shutters.h>
 
-#include "main.h"
-#include "include/common/relay.h"
+#include <SonoffDual.h>
 
+#include "main.h"
 
 const byte eepromOffset = 0;
 const unsigned long upCourseTime = 21 * 1000;
 const unsigned long downCourseTime = 21 * 1000;
 const float calibrationRatio = 0.2;
-
-OneButton button1(BUTTONPIN1, true);
-OneButton button2(BUTTONPIN2, true);
-OneButton button3(BUTTONPIN3, true);
 
 HomieNode button1Node("b1", "button");
 HomieNode button2Node("b2", "button");
@@ -24,28 +19,20 @@ HomieNode blinds("blinds1", "blinds");
 
 Shutters shutters; //
 
-byte whichRelayIsWorking = UPRELAY;
-
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
-//        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
-//        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+  SonoffDual.setRelays(false, false);
         switch (operation) {
         case ShuttersOperation::UP:
                 Debug("Shutters going up.");
-//                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
-                relaySwitch(UPRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
-                whichRelayIsWorking=UPRELAY;
+                SonoffDual.setRelays(IS_UP_RELAY_LEFT,!IS_UP_RELAY_LEFT); //always switch only one of the relay on
                 break;
         case ShuttersOperation::DOWN:
                 Debug("Shutters going down.");
-//                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
-                relaySwitch(DOWNRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
-                whichRelayIsWorking=DOWNRELAY;
+                SonoffDual.setRelays(!IS_UP_RELAY_LEFT,IS_UP_RELAY_LEFT); //always switch only one of the relay on
                 break;
         case ShuttersOperation::HALT:
                 Debug("Shutters stop.");
-                relaySwitch(whichRelayIsWorking,!ENGINELINE); //whatever we will do first we stop the shutters from moving
-//                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
+                SonoffDual.setRelays(false, false);
                 break;
         }
 }
@@ -159,21 +146,9 @@ void longPressStart3() {
 } // longPressStop3
 
 void setup() {
-        pinMode(UPRELAY, OUTPUT);
-        pinMode(DOWNRELAY, OUTPUT);
-
-        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
-        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
-
-        button1.attachClick(click1);
-        button1.attachDoubleClick(doubleclick1);
-        button1.attachLongPressStart(longPressStart1);
-        button2.attachClick(click2);
-        button2.attachDoubleClick(doubleclick2);
-        button2.attachLongPressStart(longPressStart2);
-        button3.attachClick(click3);
-        button3.attachDoubleClick(doubleclick3);
-        button3.attachLongPressStart(longPressStart3);
+        SonoffDual.setup();
+        SonoffDual.setRelays(false, false);
+        SonoffDual.setLed(true);
 
 
 //########## HOMIE stuff
@@ -227,8 +202,9 @@ void setup() {
 void loop() {
 
         Homie.loop();
-        button1.tick();
-        button2.tick();
-        button3.tick();
         shutters.loop();
+        SonoffDualButton buttonState = SonoffDual.handleButton();
+        if (buttonState == SonoffDualButton::SHORT) click1();
+        if (buttonState == SonoffDualButton::LONG) longPressStart1();
+
 }

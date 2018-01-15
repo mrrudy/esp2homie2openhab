@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #define BOARD_NAME "suplav3"
 #define BOARD_FUTURES "1BLINDS_3BUTTON_OTA"
 #define VERSION "0.93"
@@ -10,23 +11,15 @@
 #define BUTTONPIN3 4
 #define LEFT HIGH
 #define RIGHT LOW
+=======
+#define BOARD_NAME "shutters"
+#define BOARD_FUTURES "1SHUTTERS_3BUTTON_OTA"
+#define VERSION "0.93"
+>>>>>>> dc18387f5d28b16acbfd8e817b92c8bceef7a5fc
 
 #define DOWNRELAY LEFTRELAYPIN
 #define UPRELAY RIGHTRELAYPIN
 #define ENGINELINE LEFT //to which side the cable that connects power to the SHUTTERELAY is connected (should be the Normally Open channel)
-//#define UPLINE LEFT //to which side of the SHUTTERRELAY the up motor is connected to
 
-#ifdef DEBUG_ENABLED
-#define Debug(x) Homie.getMqttClient().publish(DEBUG_PREFIX BOARD_NAME, 1, false, x)
-#else
-#define Debug(x)
-#endif
-
-#ifdef DEBUG_ENABLED
-char debugbuffer[150];
-#define Debugf(...) sprintf(debugbuffer, __VA_ARGS__); Homie.getMqttClient().publish(DEBUG_PREFIX BOARD_NAME, 1, false, debugbuffer)
-#else
-#define Debugf(x)
-#endif
-
-bool relaySwitch(int whichRelay, int channel); //turns relay to the demanded channel
+#include "include/family_common/board.h"
+#include "include/common/log.h"
