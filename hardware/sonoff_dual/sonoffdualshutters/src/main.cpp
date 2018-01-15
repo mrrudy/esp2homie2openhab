@@ -38,6 +38,7 @@ void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
 }
 
 void readInEeprom(char* dest, byte length) {
+  dest[0]=0; return;
         for (byte i = 0; i < length; i++) {
                 dest[i] = EEPROM.read(eepromOffset + i);
         }
@@ -45,6 +46,7 @@ void readInEeprom(char* dest, byte length) {
 }
 
 void shuttersWriteStateHandler(Shutters* shutters, const char* state, byte length) {
+return;
         for (byte i = 0; i < length; i++) {
                 EEPROM.write(eepromOffset + i, state[i]);
     #ifdef ESP8266
@@ -154,7 +156,7 @@ void setup() {
 //########## HOMIE stuff
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
         Homie.setLedPin(LEDPIN, HIGH);
-        Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
+        Homie_setFirmware(BOARD_NAME, VERSION);
         Homie.setup();
 
         blinds.setProperty("position").send("NaN");
