@@ -148,7 +148,7 @@ void longPressStart3() {
 void setup() {
         SonoffDual.setup();
         SonoffDual.setRelays(false, false);
-        SonoffDual.setLed(true);
+        SonoffDual.setLed(false);
 
 
 //########## HOMIE stuff
@@ -198,13 +198,50 @@ void setup() {
 //        .setLevel(30) // Go to 30%
         ;
 }
+uint8_t buttonsStatus=0;
+int SonoffDualButtonLoop() {
+/*  SonoffDualButton buttonState = SonoffDual.handleButton();
+   if (buttonState == SonoffDualButton::SHORT) click1();
+   if (buttonState == SonoffDualButton::LONG) longPressStart1();
+ */
+        if (Serial.available() >= 4) {
+                uint8_t values[4] = {0, 0, 0, 0};
+                values[0] = Serial.read();
+                values[1] = Serial.read();
+                values[2] = Serial.read();
+                values[3] = Serial.read();
+                Debugf("On serial got: %#08x %#08x %#08x %#08x", values[0], values[1], values[2], values[3]);
+                if (values[0] != 0xA0 || values[3] != 0xA1) return 0;
+//Checking which button was pressed by detecting wchich bit changed
+                uint8_t whichButtonChanged=values[2] ^ buttonsStatus;
+                buttonsStatus=values[2];
+                Debugf("changed button: %u", whichButtonChanged);
+                switch (whichButtonChanged) {
+                case (uint8_t) 1:
+                        Debug("button 0 pressed");
+                        SonoffDual.setRelays(false, false);
+                        buttonsStatus=buttonsStatus & 0xF8;
+                        click1();
+                        break;
+                case (uint8_t) 2:
+                        Debug("button 1 pressed");
+                        SonoffDual.setRelays(false, false);
+                        buttonsStatus=buttonsStatus & 0xF8;
+                        click2();
+                        break;
+                case (uint8_t) 4:
+                        Debug("button 2 pressed");
+                        click3();
+                        break;
+                }
+
+        }
+}
 
 void loop() {
 
         Homie.loop();
         shutters.loop();
-        SonoffDualButton buttonState = SonoffDual.handleButton();
-        if (buttonState == SonoffDualButton::SHORT) click1();
-        if (buttonState == SonoffDualButton::LONG) longPressStart1();
+        SonoffDualButtonLoop();
 
 }
