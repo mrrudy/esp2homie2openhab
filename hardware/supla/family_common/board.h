@@ -12,6 +12,6 @@
 
 #define LEDPIN 15
 
-#define BOARD_FAMILY_NAME "suplav3"
+#define BOARD_FAMILY_NAME "supla"
 
 #endif /*family_board_H_*/

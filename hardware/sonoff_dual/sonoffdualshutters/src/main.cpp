@@ -148,12 +148,12 @@ void longPressStart3() {
 void setup() {
         SonoffDual.setup();
         SonoffDual.setRelays(false, false);
-        SonoffDual.setLed(false);
+//        SonoffDual.setLed(false);
 
 
 //########## HOMIE stuff
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
-        Homie.setLedPin(LEDPIN, HIGH);
+        Homie.setLedPin(LEDPIN, LOW);
         Homie_setFirmware(BOARD_NAME, VERSION);
         Homie.setup();
 
