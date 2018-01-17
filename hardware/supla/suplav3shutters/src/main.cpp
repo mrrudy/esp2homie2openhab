@@ -189,6 +189,7 @@ void setup() {
         blinds.advertise("position").settable(blindsMoveHandler);
         blinds.advertise("unit");
         blinds.advertise("format");
+        
 
         button1Node.setProperty("datatype").send("enum");
         button1Node.setProperty("format").send("click,2click,longclick");
