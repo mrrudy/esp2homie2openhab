@@ -206,7 +206,7 @@ void setup() {
         button3Node.setProperty("format").send("click,2click,longclick");
         button3Node.advertise("datatype");
         button3Node.advertise("format");
-        button3Node.advertise("event"); 
+        button3Node.advertise("event");
 
   #ifdef ESP8266
         EEPROM.begin(512);
