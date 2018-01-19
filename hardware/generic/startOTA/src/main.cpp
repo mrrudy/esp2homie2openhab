@@ -2,9 +2,9 @@
 #include <Homie.h>
 
 void setup() {
-        Homie.disableLogging();
+//        Homie.disableLogging();
         Homie_setFirmware("1M64OTAplatf", "0.2");
-        Homie.setLedPin(13, HIGH);
+//        Homie.setLedPin(13, HIGH);
         Homie.setup();
 
         // put your setup code here, to run once:
