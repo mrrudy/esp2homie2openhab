@@ -6,9 +6,28 @@ sitemap homie label="Kalinowa"
     Text item=backroomTemperature visibility=[homie_online==ON]
 
 
-	Text item=sonoff1_name
-	Text item=sonoff1_online icon="switch" visibility=[sonoff1_online==OFF] 
-    Switch item=sonoff1_left_switch visibility=[sonoff1_online==ON]
-    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
+	Text item=sonoffcef_name
+	Text item=sonoffcef_online icon="switch" visibility=[sonoffcef_online==OFF] 
+    Switch item=sonoffcef_center_switch visibility=[sonoffcef_online==ON]
+/*    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
+ */
+ 	Text item=sonoffacf_name
+	Text item=sonoffacf_online icon="switch" visibility=[sonoffacf_online==OFF] 
+    Switch item=sonoffacf_center_switch visibility=[sonoffacf_online==ON]
+ 
+	Text item=supla1_name
+	Text item=supla1_online icon="switch" visibility=[supla1_online==OFF] 
+    Switch item=supla1_blinds visibility=[supla1_online==ON]
+    Slider item=supla1_blinds visibility=[supla1_online==ON]
 
+    Text item=supla2_name
+	Text item=supla2_online icon="switch" visibility=[supla2_online==OFF] 
+    Switch item=supla2_blinds visibility=[supla2_online==ON]
+    Slider item=supla2_blinds visibility=[supla2_online==ON]
+    
+    Text item=sonoff06c_name
+	Text item=sonoff06c_online icon="switch" visibility=[sonoff06c_online==OFF] 
+    Switch item=sonoff06c_blinds visibility=[sonoff06c_online==ON]
+    Slider item=sonoff06c_blinds visibility=[sonoff06c_online==ON]
+    
 }
