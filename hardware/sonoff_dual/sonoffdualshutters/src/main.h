@@ -4,5 +4,5 @@
 
 #define IS_UP_RELAY_LEFT false //if the up engine of the relay is connected to left relay
 
-#include "include/family_common/board.h"
-#include "include/common/log.h"
+#include "board.h"
+#include "log.h"
