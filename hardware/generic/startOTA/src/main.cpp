@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <Homie.h>
+#include "main.h"
 
 void setup() {
 //        Homie.disableLogging();
-        Homie_setFirmware("1M64OTAplatf", "0.2");
+        Homie_setFirmware(BOARD_NAME, VERSION);
 //        Homie.setLedPin(13, HIGH);
         Homie.setup();
 
