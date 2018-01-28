@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <Homie.h>
 #include "main.h"
+#include <Thermostat.h>
+
+Thermostat thermostat;
 
 void setup() {
 //        Homie.disableLogging();
