@@ -9,3 +9,5 @@
 #define RELAYPIN D1
 
 #define RELAY_NC_OFF true  //if the turning off configuration is connected to NC port
+
+#define DEFAULT_TEMPERATURE_INTERVAL 5

@@ -10,6 +10,9 @@ DHT dht;
 HomieNode currentTempNode("currentTemp", "temperature");
 HomieNode desiredTempNode("desiredTemp", "temperature");
 
+HomieSetting<long> temperatureIntervalSetting("temperatureInterval", "The temperature interval in seconds");
+
+
 void serveThermostatOperationChange(Thermostat *t, ThermostatOperation operation) {
         switch (operation) {
         case ThermostatOperation::HEATING_ON:
@@ -22,7 +25,9 @@ void serveThermostatOperationChange(Thermostat *t, ThermostatOperation operation
 }
 
 float performTempReadout(Thermostat *t) {
-        return dht.getTemperature();
+        float currentTemp=dht.getTemperature();
+        currentTempNode.setProperty("degrees").send(String(currentTemp));
+        return currentTemp;
 }
 
 bool newDesiredTempHandler(const HomieRange& range, const String& value) {
@@ -38,16 +43,18 @@ void setup() {
         dht.setup(DHTPIN);
         pinMode(RELAYPIN, OUTPUT);
         thermostat
-        .setup(5*1000, 0.5)
+        .setup(temperatureIntervalSetting.get() * 1000UL, 0.5)
         .setOperationHandler(serveThermostatOperationChange)
         .setReadoutHandler(performTempReadout)
         .setDesiredTemp(21)
         ;
-        currentTempNode.setProperty("unit").send("c");
-        currentTempNode.setProperty("settable").send("false");
-        currentTempNode.setProperty("datatype").send("float");
+
         currentTempNode.advertise("datatype");
         currentTempNode.advertise("unit");
+        currentTempNode.setProperty("unit").send("c");
+        currentTempNode.setProperty("datatype").send("float");
+
+
         currentTempNode.advertise("degrees");
 
         desiredTempNode.setProperty("unit").send("c");
@@ -55,7 +62,12 @@ void setup() {
         desiredTempNode.setProperty("datatype").send("float");
         desiredTempNode.advertise("unit");
         desiredTempNode.advertise("datatype");
+
         desiredTempNode.advertise("degrees").settable(newDesiredTempHandler);
+
+        temperatureIntervalSetting.setDefaultValue(DEFAULT_TEMPERATURE_INTERVAL).setValidator([] (long candidate) {
+                                                                                                      return candidate > 0;
+                                                                                              });
 }
 
 void loop() {
