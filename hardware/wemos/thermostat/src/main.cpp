@@ -12,7 +12,6 @@ HomieNode desiredTempNode("desiredTemp", "temperature");
 
 HomieSetting<long> temperatureIntervalSetting("temperatureInterval", "The temperature interval in seconds ");
 
-bool run_once=true;
 
 void serveThermostatOperationChange(Thermostat *t, ThermostatOperation operation) {
         switch (operation) {
@@ -32,6 +31,8 @@ float performTempReadout(Thermostat *t) {
 }
 
 bool newDesiredTempHandler(const HomieRange& range, const String& value) {
+        desiredTempNode.setProperty("degrees").send(value);
+
         return thermostat.setDesiredTemp(value.toFloat());
         ;
 }
