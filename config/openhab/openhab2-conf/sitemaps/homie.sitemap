@@ -1,10 +1,17 @@
 sitemap homie label="Kalinowa"
 {
-	Text item=homie_name
-	Text item=homie_online icon="switch" visibility=[homie_online==OFF] 
-    Switch item=testowySwitch visibility=[homie_online==ON]
-    Text item=backroomTemperature visibility=[homie_online==ON]
+	Frame label="Temperature" {
+		Text item=wemos2d1_online icon="switch" visibility=[wemos2d1_online==OFF] 
+	    Text item=wemos2d1_tempDesired visibility=[homie_online==ON] {
+	    	Text item=wemos2d1_name
+//			Slider item=backroomTemperatureDesired 
+			Setpoint item=wemos2d1_tempDesired label="Thermostat [%.1f °C]" minValue=4 maxValue=40 step=0.5
+		    Text item=wemos2d1_tempReadout
+		    Switch item=wemos2d1_switch
+		}
+}
 
+//Slider item=tempThermostat 
 
 	Text item=sonoffcef_name
 	Text item=sonoffcef_online icon="switch" visibility=[sonoffcef_online==OFF] 
