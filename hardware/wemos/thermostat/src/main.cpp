@@ -31,9 +31,11 @@ float performTempReadout(Thermostat *t) {
 }
 
 bool newDesiredTempHandler(const HomieRange& range, const String& value) {
-        desiredTempNode.setProperty("degrees").send(value);
-
-        return thermostat.setDesiredTemp(value.toFloat());
+        if (thermostat.setDesiredTemp(value.toFloat())) {
+                desiredTempNode.setProperty("degrees").send(value);
+                return true;
+        }
+        return false;
         ;
 }
 
