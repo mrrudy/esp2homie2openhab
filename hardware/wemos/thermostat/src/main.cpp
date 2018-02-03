@@ -27,12 +27,16 @@ void serveThermostatOperationChange(Thermostat *t, ThermostatOperation operation
 float performTempReadout(Thermostat *t) {
         float currentTemp=dht.getTemperature();
         currentTempNode.setProperty("degrees").send(String(currentTemp));
+        Debugf("Performed temperature readout: %f.", currentTemp);
+        Debugf("With following freq: %lu", temperatureIntervalSetting.get() * 1000UL);
         return currentTemp;
 }
 
 bool newDesiredTempHandler(const HomieRange& range, const String& value) {
-        if (thermostat.setDesiredTemp(value.toFloat())) {
-                desiredTempNode.setProperty("degrees").send(value);
+  float temp=value.toFloat();
+        if ( (temp || value == "0" || value == "0.0" || value == "0.00") && thermostat.setDesiredTemp(temp)) {
+                ;
+                desiredTempNode.setProperty("degrees").send(String(temp));
                 return true;
         }
         return false;
@@ -53,21 +57,12 @@ void setup() {
 //        Homie.disableLogging();
         Homie_setFirmware(BOARD_NAME, VERSION);
         Homie.setSetupFunction(setupHandler);
-//        Homie.setLedPin(13, HIGH);
-//        Homie.setup();
-        // put your setup code here, to run once:
+
         dht.setup(DHTPIN);
         pinMode(RELAYPIN, OUTPUT);
         temperatureIntervalSetting.setDefaultValue(DEFAULT_TEMPERATURE_INTERVAL).setValidator([] (long candidate) {
                                                                                                       return candidate > 0;
                                                                                               });
-        thermostat
-        .setup(temperatureIntervalSetting.get() * 1000UL, 0.5)
-        .setOperationHandler(serveThermostatOperationChange)
-        .setReadoutHandler(performTempReadout)
-        .setDesiredTemp(DEFAULT_DESIRED_TEMPERATURE)
-        ;
-
         currentTempNode.advertise("unit");
         currentTempNode.advertise("datatype");
         currentTempNode.advertise("deegrees");
@@ -76,9 +71,16 @@ void setup() {
         desiredTempNode.advertise("datatype");
         desiredTempNode.advertise("degrees").settable(newDesiredTempHandler);
 
-
         Homie.setup();
-        //desiredTempNode.setProperty("degrees").send(String(DEFAULT_DESIRED_TEMPERATURE));
+
+        thermostat
+        .setup(temperatureIntervalSetting.get() * 1000UL, 0.5)  //U can use homie settings only after Homie.setup()
+        .setOperationHandler(serveThermostatOperationChange)
+        .setReadoutHandler(performTempReadout)
+        .setDesiredTemp(DEFAULT_DESIRED_TEMPERATURE)
+        ;
+        Debug("I'm alive! After homie setup.");
+
 }
 
 void loop() {
