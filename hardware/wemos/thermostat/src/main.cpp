@@ -81,6 +81,7 @@ void setup() {
         .setReadoutHandler(performTempReadout)
         .setDesiredTemp(DEFAULT_DESIRED_TEMPERATURE)
         ;
+        newDesiredTempHandler(HomieRange {true,0}, String("25")); // TODO:find a way to execute it instead of setting it separately in homie and thermostat; for now it does not have an effect
         Debug("I'm alive! After homie setup. ");
 
 }
