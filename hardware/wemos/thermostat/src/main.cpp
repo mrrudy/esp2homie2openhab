@@ -5,7 +5,7 @@
 #include <DHT.h>
 
 Thermostat thermostat;
-DHT dht;
+DHT dht(DHTPIN, DHTTYPE);
 
 HomieNode currentTempNode("currentTemp", "temperature");
 HomieNode desiredTempNode("desiredTemp", "temperature");
@@ -26,7 +26,12 @@ void serveThermostatOperationChange(Thermostat *t, ThermostatOperation operation
 }
 
 float performTempReadout(Thermostat *t) {
-        float currentTemp=dht.getTemperature();
+
+        float currentTemp=dht.readTemperature(false);
+        if (isnan(currentTemp)) {
+          Debug("Failed to read from DHT sensor!");
+          return 0;
+        }
         currentTempNode.setProperty("degrees").send(String(currentTemp));
         return currentTemp;
 }
@@ -57,7 +62,7 @@ void setup() {
         Homie_setFirmware(BOARD_NAME, VERSION);
         Homie.setSetupFunction(setupHandler);
 
-        dht.setup(DHTPIN);
+        dht.begin();
         pinMode(RELAYPIN, OUTPUT);
         temperatureIntervalSetting.setDefaultValue(DEFAULT_TEMPERATURE_INTERVAL).setValidator([] (long candidate) {
                                                                                                       return candidate > 0;

@@ -8,6 +8,11 @@
 #define DHTPIN D4
 #define RELAYPIN D1
 
+//#define DHTTYPE           DHT11     // DHT 11 
+#define DHTTYPE           DHT22     // DHT 22 (AM2302)
+//#define DHTTYPE           DHT21     // DHT 21 (AM2301)
+
+
 #define RELAY_NC_OFF true  //if the turning off configuration is connected to NC port
 
 #define DEFAULT_TEMPERATURE_INTERVAL 5
