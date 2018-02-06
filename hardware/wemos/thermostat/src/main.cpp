@@ -52,8 +52,8 @@ float performTempReadout(Thermostat *t) {
 
         float currentTemp=dht.readTemperature(false);
         if (isnan(currentTemp)) {
-                Debug("Failed to read from DHT sensor!");
-                return 999;
+                Debug("Failed to read from DHT sensor! ");
+                return currentTemp;
         }
         currentTempNode.setProperty("degrees").send(String(currentTemp));
         return currentTemp;
@@ -62,7 +62,6 @@ float performTempReadout(Thermostat *t) {
 bool newDesiredTempHandler(const HomieRange& range, const String& value) {
         float temp=value.toFloat();
         if ( (temp || value == "0" || value == "0.0" || value == "0.00") && thermostat.setDesiredTemp(temp)) {
-                ;
                 desiredTempNode.setProperty("degrees").send(String(temp));
                 return true;
         }
@@ -78,7 +77,7 @@ void setupHandler() {
         desiredTempNode.setProperty("settable").send("true");
         desiredTempNode.setProperty("datatype").send("float");
 
-        desiredTempNode.setProperty("degrees").send(String(DEFAULT_DESIRED_TEMPERATURE));
+  //      desiredTempNode.setProperty("degrees").send(String(DEFAULT_DESIRED_TEMPERATURE));
 
         relay1.setProperty("datatype").send("boolean");
 
