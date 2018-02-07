@@ -1,0 +1,3 @@
+
+result = '{"settings":{"temperatureInterval":' + input + '}}';
+

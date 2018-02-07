@@ -1,0 +1,10 @@
+Strategies {
+// for rrd charts, we need a cron strategy
+everyMinute : "0 * * * * ?"
+
+        default = everyChange
+}
+
+Items {
+        Graph* : strategy = everyUpdate, everyMinute
+}

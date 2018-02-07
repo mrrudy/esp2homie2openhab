@@ -2,19 +2,19 @@ Group homie "Homie"
 
 
 String wemos2d1_name "Homie name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$name:state:REGEX((.*))]" }
-Switch wemos2d1_online "Homie przelacznik online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$online:state:JS(homie-tf.js)"}
+Switch wemos2d1_online "Homie online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$online:state:JS(homie-tf.js)"}
 
-Switch  wemos2d1_switch "relay" <switch> (SonoffBedLight,HouseLight) { 
-		mqtt=">[nasmqtt:homie/5ccf7f2c12d1/1/on/set:command:ON:true],
-			  >[nasmqtt:homie/5ccf7f2c12d1/1/on/set:command:OFF:false],
-  			  <[nasmqtt:homie/5ccf7f2c12d1/1/on:state:JS(homie-tf.js)]
+Switch  wemos2d1_switch "Heating" <switch>  { 
+		mqtt=">[nasmqtt:homie/5ccf7f2c12d1/heating/on/set:command:ON:true],
+			  >[nasmqtt:homie/5ccf7f2c12d1/heating/on/set:command:OFF:false],
+  			  <[nasmqtt:homie/5ccf7f2c12d1/heating/on:state:JS(homie-tf.js)]
   			  "
 }
-Number	wemos2d1_tempReadout	"Readout temperature [%.1f °C]"	<temperature> {
+Number	wemos2d1_tempReadout	"Readout temperature [%.1f °C]"	<temperature> (GraphTempThermo) {
 	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/currentTemp/degrees:state:default]"
 }
 
-Number	wemos2d1_tempDesired	"Desired temperature [%.1f °C]"	<temperature> {
+Number	wemos2d1_tempDesired	"Desired temperature [%.1f °C]"	<temperature> (GraphTempThermo) {
 	mqtt="
 		<[nasmqtt:homie/5ccf7f2c12d1/desiredTemp/degrees:state:default],
  		>[nasmqtt:homie/5ccf7f2c12d1/desiredTemp/degrees/set:command:*:default]
@@ -22,6 +22,24 @@ Number	wemos2d1_tempDesired	"Desired temperature [%.1f °C]"	<temperature> {
 		"
 }
 
+Number wemos2d1_setting_temperatureInterval	"Interval for readout of temperature: [%s]" { 
+	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$implementation/config:state:JSONPATH($.settings.temperatureInterval)],
+		  >[nasmqtt:homie/5ccf7f2c12d1/$implementation/config/set:command:*:JS(homie-settings-tempeval.js)]
+	"
+}
+
+Number wemos2d1_setting_histeresis	"Histeresis of temperature sensor: [%s]" { 
+	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$implementation/config:state:JSONPATH($.settings.histeresis)],
+		  >[nasmqtt:homie/5ccf7f2c12d1/$implementation/config/set:command:*:JS(homie-settings-histeresis.js)]
+	"
+}
+
+// To choose a proper cahrt period in a sitemap
+// mappings=[0="Tag", 1="Woche", 2="Monat", 3="Jahr"]
+Number chart_period
+    "Graph Period"
+
+Group GraphTempThermo "Group of Temperature to chart"
 
 String sonoffcef_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/ecfabc065cef/$name:state:REGEX((.*))]" }
 Switch sonoffcef_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/ecfabc065cef/$online:state:JS(homie-tf.js)"}

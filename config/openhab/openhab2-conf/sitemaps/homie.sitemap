@@ -2,39 +2,52 @@ sitemap homie label="Kalinowa"
 {
 	Frame label="Temperature" {
 		Text item=wemos2d1_online icon="switch" visibility=[wemos2d1_online==OFF] 
-	    Text item=wemos2d1_tempDesired visibility=[homie_online==ON] {
-	    	Text item=wemos2d1_name
-//			Slider item=backroomTemperatureDesired 
-			Setpoint item=wemos2d1_tempDesired label="Thermostat [%.1f °C]" minValue=4 maxValue=40 step=0.5
-		    Text item=wemos2d1_tempReadout
-		    Switch item=wemos2d1_switch
+	    Text item=wemos2d1_tempDesired visibility=[wemos2d1_online==ON] {
+	    	Frame label="Settings" {
+		    	Text item=wemos2d1_name
+	//			Slider item=backroomTemperatureDesired 
+				Setpoint item=wemos2d1_tempDesired label="Thermostat [%.1f °C]" minValue=4 maxValue=40 step=0.5
+			    Text item=wemos2d1_tempReadout
+			    Switch item=wemos2d1_switch
+			    Setpoint item=wemos2d1_setting_temperatureInterval minValue=3 maxValue=60 step=1
+			    Setpoint item=wemos2d1_setting_histeresis minValue=0.1 maxValue=5 step=0.1
+			    Chart item=wemos2d1_tempDesired period=h
+		    }
+		    Frame label="Graphs"{
+				Switch item=chart_period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week", 3="Month", 4="Year"]
+				Chart item=wemos2d1_tempReadout period=h refresh=600 visibility=[chart_period==0]
+				Chart item=wemos2d1_tempReadout period=D refresh=900 visibility=[chart_period==1, chart_period=="NULL"]
+				Chart item=wemos2d1_tempReadout  period=W refresh=3600 visibility=[chart_period==2]
+				Chart item=wemos2d1_tempReadout  period=M refresh=3600 visibility=[chart_period==3]
+				Chart item=wemos2d1_tempReadout  period=Y refresh=3600 visibility=[chart_period==4]
+			}
 		}
 }
 
 //Slider item=tempThermostat 
-
-	Text item=sonoffcef_name
-	Text item=sonoffcef_online icon="switch" visibility=[sonoffcef_online==OFF] 
-    Switch item=sonoffcef_center_switch visibility=[sonoffcef_online==ON]
-/*    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
- */
- 	Text item=sonoffacf_name
-	Text item=sonoffacf_online icon="switch" visibility=[sonoffacf_online==OFF] 
-    Switch item=sonoffacf_center_switch visibility=[sonoffacf_online==ON]
- 
-	Text item=supla1_name
-	Text item=supla1_online icon="switch" visibility=[supla1_online==OFF] 
-    Switch item=supla1_blinds visibility=[supla1_online==ON]
-    Slider item=supla1_blinds visibility=[supla1_online==ON]
-
-    Text item=supla2_name
-	Text item=supla2_online icon="switch" visibility=[supla2_online==OFF] 
-    Switch item=supla2_blinds visibility=[supla2_online==ON]
-    Slider item=supla2_blinds visibility=[supla2_online==ON]
-    
-    Text item=sonoff06c_name
-	Text item=sonoff06c_online icon="switch" visibility=[sonoff06c_online==OFF] 
-    Switch item=sonoff06c_blinds visibility=[sonoff06c_online==ON]
-    Slider item=sonoff06c_blinds visibility=[sonoff06c_online==ON]
-    
+	Frame label="WorkInProgress" {
+		Text item=sonoffcef_name
+		Text item=sonoffcef_online icon="switch" visibility=[sonoffcef_online==OFF] 
+	    Switch item=sonoffcef_center_switch visibility=[sonoffcef_online==ON]
+	/*    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
+	 */
+	 	Text item=sonoffacf_name
+		Text item=sonoffacf_online icon="switch" visibility=[sonoffacf_online==OFF] 
+	    Switch item=sonoffacf_center_switch visibility=[sonoffacf_online==ON]
+	 
+		Text item=supla1_name
+		Text item=supla1_online icon="switch" visibility=[supla1_online==OFF] 
+	    Switch item=supla1_blinds visibility=[supla1_online==ON]
+	    Slider item=supla1_blinds visibility=[supla1_online==ON]
+	
+	    Text item=supla2_name
+		Text item=supla2_online icon="switch" visibility=[supla2_online==OFF] 
+	    Switch item=supla2_blinds visibility=[supla2_online==ON]
+	    Slider item=supla2_blinds visibility=[supla2_online==ON]
+	    
+	    Text item=sonoff06c_name
+		Text item=sonoff06c_online icon="switch" visibility=[sonoff06c_online==OFF] 
+	    Switch item=sonoff06c_blinds visibility=[sonoff06c_online==ON]
+	    Slider item=sonoff06c_blinds visibility=[sonoff06c_online==ON]
+	}    
 }
