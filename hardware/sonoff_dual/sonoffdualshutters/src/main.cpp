@@ -20,7 +20,7 @@ HomieNode blinds("blinds1", "blinds");
 Shutters shutters; //
 
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
-  SonoffDual.setRelays(false, false);
+        SonoffDual.setRelays(false, false);
         switch (operation) {
         case ShuttersOperation::UP:
                 Debug("Shutters going up.");
@@ -210,7 +210,7 @@ int SonoffDualButtonLoop() {
                 values[1] = Serial.read();
                 values[2] = Serial.read();
                 values[3] = Serial.read();
-                Debugf("On serial got: %#08x %#08x %#08x %#08x", values[0], values[1], values[2], values[3]);
+//                Debugf("On serial got: %#08x %#08x %#08x %#08x", values[0], values[1], values[2], values[3]);
                 if (values[0] != 0xA0 || values[3] != 0xA1) return 0;
 //Checking which button was pressed by detecting wchich bit changed
                 uint8_t whichButtonChanged=values[2] ^ buttonsStatus;
