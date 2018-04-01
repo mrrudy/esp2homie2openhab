@@ -6,7 +6,7 @@ from base64 import b64decode
 # print env.Dump()
 #
 
-env.Replace(UPLOADCMD='/home/rudy/Dokumenty/kod/IOT/esp2homie2openhab/hardware/sonoff_dual/sonoffdualshutters/.piolibdeps/Homie/scripts/ota_updater/ota_updater.py ' + b64decode(ARGUMENTS.get("CUSTOM_OPTION")) + ' "${BUILD_DIR}/${PROGNAME}.bin" ')
+env.Replace(UPLOADCMD='.\.piolibdeps\Homie\scripts\ota_updater\ota_updater.py ' + b64decode(ARGUMENTS.get("CUSTOM_OPTION")) + ' "${BUILD_DIR}/${PROGNAME}.bin" ')
 env.Replace(UPLOAD_PORT='3333')
 # uncomment line below to see environment variables
 #print "trying to make line:" + b64decode(ARGUMENTS.get("CUSTOM_OPTION")) + ' ' + map(str, BUILD_DIR) + '/${PROGNAME}.bin'

@@ -7,8 +7,8 @@
 #include "main.h"
 
 const byte eepromOffset = 0;
-const unsigned long upCourseTime = 21 * 1000;
-const unsigned long downCourseTime = 21 * 1000;
+const unsigned long upCourseTime = 100 * 1000;
+const unsigned long downCourseTime = 100 * 1000;
 const float calibrationRatio = 0.2;
 
 HomieNode button1Node("b1", "button");

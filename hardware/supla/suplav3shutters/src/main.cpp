@@ -4,8 +4,11 @@
 #include <Shutters.h>
 
 #include "main.h"
-#include "include/common/relay.h"
 
+bool relaySwitch(int whichRelay, int channel) {
+        digitalWrite(whichRelay, channel);
+        return (true);
+}
 
 const byte eepromOffset = 0;
 const unsigned long upCourseTime = 21 * 1000;
@@ -189,7 +192,7 @@ void setup() {
         blinds.advertise("position").settable(blindsMoveHandler);
         blinds.advertise("unit");
         blinds.advertise("format");
-        
+
 
         button1Node.setProperty("datatype").send("enum");
         button1Node.setProperty("format").send("click,2click,longclick");
