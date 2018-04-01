@@ -1,16 +1,24 @@
 Group homie "Homie"
 
+Switch Present "someone is home" <present>
+Group:Switch:AND(OFF,ON) gPresent <present> // all presence sensors belong to this group
+Switch Present_Timer { expire="5s,command=OFF" }
 
+Switch Tasker1_rudy (gPresent) [ "Switchable" ]
+Switch Cell1_Basia (gPresent)
+Switch Manual1_any (gPresent)
+ 
+ 
 String wemos2d1_name "Homie name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$name:state:REGEX((.*))]" }
 Switch wemos2d1_online "Homie online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$online:state:JS(homie-tf.js)"}
 
-Switch  wemos2d1_switch "Heating" <switch>  { 
+Switch  wemos2d1_switch "Heating" <switch>  (GraphTempThermo) {
 		mqtt=">[nasmqtt:homie/5ccf7f2c12d1/heating/on/set:command:ON:true],
 			  >[nasmqtt:homie/5ccf7f2c12d1/heating/on/set:command:OFF:false],
   			  <[nasmqtt:homie/5ccf7f2c12d1/heating/on:state:JS(homie-tf.js)]
   			  "
 }
-Number	wemos2d1_tempReadout	"Readout temperature [%.1f °C]"	<temperature> (GraphTempThermo) {
+Number	wemos2d1_tempReadout	"Readout temperature [%.1f °C]"	<temperature> (GraphTempThermo) [ "Lighting" ] {
 	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/currentTemp/degrees:state:default]"
 }
 
@@ -22,13 +30,13 @@ Number	wemos2d1_tempDesired	"Desired temperature [%.1f °C]"	<temperature> (Grap
 		"
 }
 
-Number wemos2d1_setting_temperatureInterval	"Interval for readout of temperature: [%s]" { 
+Number wemos2d1_setting_temperatureInterval	"Interval for readout of temperature: [%s]" {
 	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$implementation/config:state:JSONPATH($.settings.temperatureInterval)],
 		  >[nasmqtt:homie/5ccf7f2c12d1/$implementation/config/set:command:*:JS(homie-settings-tempeval.js)]
 	"
 }
 
-Number wemos2d1_setting_histeresis	"Histeresis of temperature sensor: [%s]" { 
+Number wemos2d1_setting_histeresis	"Histeresis of temperature sensor: [%s]" {
 	mqtt="<[nasmqtt:homie/5ccf7f2c12d1/$implementation/config:state:JSONPATH($.settings.histeresis)],
 		  >[nasmqtt:homie/5ccf7f2c12d1/$implementation/config/set:command:*:JS(homie-settings-histeresis.js)]
 	"
@@ -44,7 +52,7 @@ Group GraphTempThermo "Group of Temperature to chart"
 String sonoffcef_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/ecfabc065cef/$name:state:REGEX((.*))]" }
 Switch sonoffcef_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/ecfabc065cef/$online:state:JS(homie-tf.js)"}
 
-Switch  sonoffcef_center_switch "relay" <switch> (Group1,Group2) { 
+Switch  sonoffcef_center_switch "relay" <switch> (Group1,Group2) {
 		mqtt=">[nasmqtt:homie/ecfabc065cef/center/on/set:command:ON:true],
 			  >[nasmqtt:homie/ecfabc065cef/center/on/set:command:OFF:false],
   			  <[nasmqtt:homie/ecfabc065cef/center/on:state:JS(homie-tf.js)]
@@ -53,7 +61,7 @@ Switch  sonoffcef_center_switch "relay" <switch> (Group1,Group2) {
 String sonoffacf_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/60019466aacf/$name:state:REGEX((.*))]" }
 Switch sonoffacf_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/60019466aacf/$online:state:JS(homie-tf.js)"}
 
-Switch  sonoffacf_center_switch "relay" <switch> (Group1,Group2) { 
+Switch  sonoffacf_center_switch "relay" <switch> (Group1,Group2) {
 		mqtt=">[nasmqtt:homie/60019466aacf/center/on/set:command:ON:true],
 			  >[nasmqtt:homie/60019466aacf/center/on/set:command:OFF:false],
   			  <[nasmqtt:homie/60019466aacf/center/on:state:JS(homie-tf.js)]
@@ -61,40 +69,50 @@ Switch  sonoffacf_center_switch "relay" <switch> (Group1,Group2) {
 }
 
 /*
-Switch  sonoff1_right_switch "relay" <switch> (Group1,Group2) { 
+Switch  sonoff1_right_switch "relay" <switch> (Group1,Group2) {
 		mqtt=">[nasmqtt:homie/5ccf7f9f306c/right/on/set:command:ON:true],
 			  >[nasmqtt:homie/5ccf7f9f306c/right/on/set:command:OFF:false],
   			  <[nasmqtt:homie/5ccf7f9f306c/right/on:state:JS(homie-tf.js)]
   			  "
 }
  */
- 
-String supla1_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7fdf42ae/$name:state:REGEX((.*))]" }
-Switch supla1_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7fdf42ae/$online:state:JS(homie-tf.js)"}
 
-Rollershutter supla1_blinds "blinds" (Group1, Group2) { 
+String supla1_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/dc4f22107450/$name:state:REGEX((.*))]" }
+Switch supla1_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/dc4f22107450/$online:state:JS(homie-tf.js)"}
+
+Rollershutter supla1_blinds "blinds" (Group1, Group2) {
 	mqtt="
-		>[nasmqtt:homie/5ccf7fdf42ae/blinds1/position/set:command:*:default],
-		<[nasmqtt:homie/5ccf7fdf42ae/blinds1/position:state:default]
+		>[nasmqtt:homie/dc4f22107450/blinds1/position/set:command:*:default],
+		<[nasmqtt:homie/dc4f22107450/blinds1/position:state:default]
 		"
 }
 
 String supla2_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7fdf0bfa/$name:state:REGEX((.*))]" }
 Switch supla2_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7fdf0bfa/$online:state:JS(homie-tf.js)"}
 
-Rollershutter supla2_blinds "blinds" (Group1, Group2) { 
+Rollershutter supla2_blinds "blinds" (Group1, Group2) {
 	mqtt="
 		>[nasmqtt:homie/5ccf7fdf0bfa/blinds1/position/set:command:*:default],
 		<[nasmqtt:homie/5ccf7fdf0bfa/blinds1/position:state:default]
 		"
-}  
+}
 
-String sonoff06c_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f9f306c/$name:state:REGEX((.*))]" }
-Switch sonoff06c_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f9f306c/$online:state:JS(homie-tf.js)"}
+String RoletaSypialnia_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f9f306c/$name:state:REGEX((.*))]" }
+Switch RoletaSypialnia_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f9f306c/$online:state:JS(homie-tf.js)"}
 
-Rollershutter sonoff06c_blinds "blinds" (Group1, Group2) { 
+Rollershutter RoletaSypialnia_blinds "blinds" (Group1, Group2) [ "Lighting" ]  {
 	mqtt="
 		>[nasmqtt:homie/5ccf7f9f306c/blinds1/position/set:command:*:default],
 		<[nasmqtt:homie/5ccf7f9f306c/blinds1/position:state:default]
 		"
-}  
+}
+
+String ZaworPiwnica_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/5ccf7f9f342f/$name:state:REGEX((.*))]" }
+Switch ZaworPiwnica_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/5ccf7f9f342f/$online:state:JS(homie-tf.js)"}
+
+Rollershutter ZaworPiwnica_blinds "blinds" (Group1, Group2) [ "Lighting" ] {
+	mqtt="
+		>[nasmqtt:homie/5ccf7f9f342f/blinds1/position/set:command:*:default],
+		<[nasmqtt:homie/5ccf7f9f342f/blinds1/position:state:default]
+		"
+}
