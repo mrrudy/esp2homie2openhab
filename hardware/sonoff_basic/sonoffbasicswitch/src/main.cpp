@@ -45,7 +45,7 @@ void doubleclick1() {
 
 
 // This function will be called once, when the button1 is released after beeing pressed for a long time.
-void longPressStart1() {
+void longPress1() {
         button1Node.setProperty("event").send("longclick");
 } // longPressStop1
 
@@ -57,7 +57,7 @@ void doubleclick2() {
 
 
 // This function will be called once, when the button2 is released after beeing pressed for a long time.
-void longPressStart2() {
+void longPress2() {
         button2Node.setProperty("event").send("longclick");
 } // longPressStop2
 
@@ -88,6 +88,12 @@ relaySwitch(RELAYPIN,false);
         button2Node.advertise("event");
 
         button1.attachClick(click1);
+        button1.attachDoubleClick(doubleclick1);
+        button1.attachLongPressStop(longPress1);
+
+        button2.attachClick(click2);
+        button2.attachDoubleClick(doubleclick2);
+        button2.attachLongPressStop(longPress2);
 
 }
 
