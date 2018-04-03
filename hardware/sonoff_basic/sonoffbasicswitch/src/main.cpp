@@ -2,7 +2,12 @@
 #include <OneButton.h>
 
 #include "main.h"
-#include "include/common/relay.h"
+#include "all_common_relay.h"
+
+bool relaySwitch(int whichRelay, int channel) { //TODO repair include from common cpp and move it there
+        digitalWrite(whichRelay, channel);
+        return (true);
+}
 
 OneButton button1(BUTTONPIN, true);
 OneButton button2(J1PIN5, true);
@@ -24,7 +29,7 @@ bool relayOnHandler(const HomieRange& range, const String& value) {
 void click1() {
         Debug("button1 click");
         button1Node.setProperty("event").send("click"); //sending this but be sure not to double react on it as below code already enables relay
-relaySwitch(RELAYPIN,HIGH);
+//relaySwitch(RELAYPIN,HIGH);
 } // click1
 
 // This function will be called when the button2 was pressed shortly.
@@ -82,6 +87,7 @@ relaySwitch(RELAYPIN,false);
         button2Node.advertise("format");
         button2Node.advertise("event");
 
+        button1.attachClick(click1);
 
 }
 
