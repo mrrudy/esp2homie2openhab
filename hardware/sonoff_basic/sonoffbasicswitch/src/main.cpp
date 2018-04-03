@@ -2,12 +2,12 @@
 #include <OneButton.h>
 
 #include "main.h"
-#include "all_common_relay.h"
+//#include "common/all_common_relay.h"
 
-bool relaySwitch(int whichRelay, int channel) { //TODO repair include from common cpp and move it there
+/*bool relaySwitch(int whichRelay, int channel) { //TODO repair include from common cpp and move it there
         digitalWrite(whichRelay, channel);
         return (true);
-}
+}*/
 
 OneButton button1(BUTTONPIN, true);
 OneButton button2(J1PIN5, true);

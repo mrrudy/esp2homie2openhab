@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "relay.h"
+#include "all_common_relay.h"
 
 
 bool relaySwitch(int whichRelay, int channel) {
