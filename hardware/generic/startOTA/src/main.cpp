@@ -2,6 +2,8 @@
 #include <Homie.h>
 #include "main.h"
 
+char _all_common_log_debugbuffer[150];
+
 void setup() {
 //        Homie.disableLogging();
         Homie_setFirmware(BOARD_NAME, VERSION);
