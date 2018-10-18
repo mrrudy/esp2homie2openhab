@@ -1,20 +1,46 @@
 
 #include "Arduino.h"
 #include "main.h"
+#include <Homie.h>
+
+
+int lastReadoutTime=0;
+bool swap_high=true;
+
+HomieNode relay1("center", "switch");
+
+bool relayOnHandler(const HomieRange& range, const String& value) {
+    relaySwitch(RELAYPIN,value=="true" ? HIGH : LOW);
+//    digitalWrite(0, value=="true" ? HIGH : LOW);
+//    Debugf("Switching relay to %d", value=="true" ? HIGH : LOW);
+    relay1.setProperty("on").send(value); //
+    return true;
+}
 
 
 void setup() {
+          Homie.disableLogging();
+//Serial.begin(74880); //if you want logging on serial comment above line so it is not disabled
+Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
+          Homie_setFirmware(BOARD_NAME, VERSION);
+          //Homie.setLedPin(LEDPIN, LOW);
+          Homie.disableLedFeedback();
+          Homie.setup();
+          relay1.advertise("on").settable(relayOnHandler);
 
-  pinMode(0, OUTPUT);
-  pinMode(2, OUTPUT);
+//          pinMode(0, FUNCTION_3);
+          pinMode(RELAYPIN, OUTPUT);
+          digitalWrite(RELAYPIN, HIGH);
+//          pinMode(2, OUTPUT);
 
 }
 
 void loop() {
-
-  digitalWrite(0, HIGH);
-  delay(1000);
-  digitalWrite(0, LOW);
-  delay(1000);
-
+  Homie.loop();
+/*  if (millis()-lastReadoutTime>=15001) {
+  lastReadoutTime=millis();
+  digitalWrite(0, swap_high ? HIGH : LOW);
+  swap_high=!swap_high;
+  }
+*/
 }

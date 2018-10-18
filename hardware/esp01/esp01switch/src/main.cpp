@@ -3,6 +3,9 @@
 
 #include "main.h"
 
+int lastReadoutTime=0;
+bool swap_high=true;
+
 char _all_common_log_debugbuffer[150];
 //#include "common/all_common_relay.h"
 
@@ -71,11 +74,9 @@ void setup() {
   //pinMode(TXPIN, FUNCTION_3); //use serial pins as IO
 //  pinMode(RXPIN, FUNCTION_3); //use serial pins as IO
 
-  pinMode(RELAYPIN, OUTPUT);
-relaySwitch(RELAYPIN,true);
 //########## HOMIE stuff
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
-//        Homie.setLedPin(LEDPIN, LOW);
+        Homie.setLedPin(LEDPIN, LOW);
         Homie_setFirmware(BOARD_NAME, VERSION);
         Homie.setup();
 
@@ -102,6 +103,9 @@ relaySwitch(RELAYPIN,true);
         button2.attachDoubleClick(doubleclick2);
         button2.attachLongPressStop(longPress2);
 
+        pinMode(0, OUTPUT);//pinMode(RELAYPIN, OUTPUT);
+        digitalWrite(0, HIGH);//relaySwitch(RELAYPIN,true);
+
 }
 
 void loop() {
@@ -109,4 +113,6 @@ void loop() {
         Homie.loop();
         button1.tick();
         button2.tick();
+
+
 }
