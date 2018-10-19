@@ -5,6 +5,8 @@
 
 #include "main.h"
 
+char _all_common_log_debugbuffer[150];
+
 bool relaySwitch(int whichRelay, int channel) {
         digitalWrite(whichRelay, channel);
         return (true);
