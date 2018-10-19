@@ -12,7 +12,7 @@ HomieNode relay1("center", "switch");
 bool relayOnHandler(const HomieRange& range, const String& value) {
     relaySwitch(RELAYPIN,value=="true" ? HIGH : LOW);
 //    digitalWrite(0, value=="true" ? HIGH : LOW);
-//    Debugf("Switching relay to %d", value=="true" ? HIGH : LOW);
+    Debugf("Switching relay to %d", value=="true" ? HIGH : LOW);
     relay1.setProperty("on").send(value); //
     return true;
 }

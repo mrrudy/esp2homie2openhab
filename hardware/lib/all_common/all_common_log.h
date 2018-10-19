@@ -5,6 +5,9 @@
 #define DEBUG_PREFIX "DEBUG/"
 
 #ifdef DEBUG_ENABLED
+
+char _all_common_log_debugbuffer[150];
+
 #define Debug(x) Homie.getMqttClient().publish(DEBUG_PREFIX, 1, false, x)
 #else
 #define Debug(x)
