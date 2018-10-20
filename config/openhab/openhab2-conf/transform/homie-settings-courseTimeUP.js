@@ -1,0 +1,3 @@
+
+result = '{"settings":{"courseTimeUP":' + input + '}}';
+

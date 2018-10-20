@@ -11,8 +11,8 @@ bool relaySwitch(int whichRelay, int channel) {
 }
 
 const byte eepromOffset = 0;
-const unsigned long upCourseTime = 21 * 1000;
-const unsigned long downCourseTime = 21 * 1000;
+//const unsigned long upCourseTime = 21 * 1000;
+//const unsigned long downCourseTime = 21 * 1000;
 const float calibrationRatio = 0.2;
 
 OneButton button1(BUTTONPIN1, true);
@@ -29,21 +29,25 @@ Shutters shutters; //
 
 byte whichRelayIsWorking = UPRELAY;
 
+HomieSetting<long> shuttersCourseTimeUP("courseTimeUP", "How long (ms) does it take for shutters to run UP");
+HomieSetting<long> shuttersCourseTimeDOWN("courseTimeDOWN", "How long (ms) does it take for shutters to run DOWN");
+HomieSetting<bool> shuttersReverseRelays("reverseRelays", "Should UP and DOWN relays be switched?");
+
+
+
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
 //        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
 //        relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
         switch (operation) {
         case ShuttersOperation::UP:
-                Debug("Shutters going up.");
-//                relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
-                relaySwitch(UPRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
-                whichRelayIsWorking=UPRELAY;
+                whichRelayIsWorking=(shuttersReverseRelays.get()) ? DOWNRELAY : UPRELAY;
+                Debugf("Shutters going up. Switching relay: %d", whichRelayIsWorking);
+                relaySwitch(whichRelayIsWorking,ENGINELINE); //switch the motor relay to the line with up shutters
                 break;
         case ShuttersOperation::DOWN:
-                Debug("Shutters going down.");
-//                relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the opposite relay
-                relaySwitch(DOWNRELAY,ENGINELINE); //switch the motor relay to the line with up shutters
-                whichRelayIsWorking=DOWNRELAY;
+                whichRelayIsWorking=(shuttersReverseRelays.get()) ? UPRELAY : DOWNRELAY;
+                Debugf("Shutters going down. Switching relay: %d", whichRelayIsWorking);
+                relaySwitch(whichRelayIsWorking,ENGINELINE); //switch the motor relay to the line with up shutters
                 break;
         case ShuttersOperation::HALT:
                 Debug("Shutters stop.");
@@ -180,9 +184,24 @@ void setup() {
 
 
 //########## HOMIE stuff
+#ifdef DEBUG_ENABLED
+        Serial.begin(74880);
+#else
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
+#endif
         Homie.setLedPin(LEDPIN, HIGH);
         Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
+
+        shuttersCourseTimeUP.setDefaultValue(21000).setValidator([] (long candidate) {
+          return candidate >= 1000;
+        });
+        shuttersCourseTimeDOWN.setDefaultValue(0).setValidator([] (long candidate) {
+          return candidate >= 0;
+        });
+        shuttersReverseRelays.setDefaultValue(false).setValidator([] (bool candidate) {
+          return (candidate == true) || (candidate == false);
+        });
+
         Homie.setup();
 
         blinds.setProperty("position").send("NaN");
@@ -212,6 +231,7 @@ void setup() {
         button3Node.advertise("format");
         button3Node.advertise("event");
 
+
   #ifdef ESP8266
         EEPROM.begin(512);
   #endif
@@ -221,11 +241,12 @@ void setup() {
         .setOperationHandler(shuttersOperationHandler)
         .setWriteStateHandler(shuttersWriteStateHandler)
         .restoreState(storedShuttersState)
-        .setCourseTime(upCourseTime, downCourseTime)
+        .setCourseTime(shuttersCourseTimeUP.get(), shuttersCourseTimeDOWN.get())
         .onLevelReached(onShuttersLevelReached)
         .begin()
 //        .setLevel(30) // Go to 30%
         ;
+//        Debugf("Setting course of shutters to %d", shuttersClosingTime.get());
 }
 
 void loop() {

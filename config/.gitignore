@@ -1,0 +1,7 @@
+
+*.txt
+*.mp3
+*.vanila
+openhab/openhab2-conf/transform/de.map
+openhab/openhab2-conf/transform/en.map
+openhab/openhab2-conf/services/pushbullet.cfg

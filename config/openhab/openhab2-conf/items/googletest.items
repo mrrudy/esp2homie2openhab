@@ -1,0 +1,10 @@
+[[[[][[]{}{}{[][]}]]]]dupa
+
+Rollershutter SypialniaRoleta "Shutters in bedroom" (gBedroom, g1stFloor, gShutters) [ "Lighting" ]  {
+	mqtt="
+		>[nasmqtt:homie/5ccf7f9f306c/blinds1/position/set:command:*:default],
+		<[nasmqtt:homie/5ccf7f9f306c/blinds1/position:state:default]
+		"
+}
+
+Switch Tasker1_rudy "Home presence" (gPresent) 

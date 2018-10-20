@@ -1,0 +1,55 @@
+rule "System started"
+when
+    System started
+then
+    Scene_Night.postUpdate(0)
+
+end
+
+rule "Google emulator/translator"
+when
+	Item GoodNightSwitch received command
+then
+	switch receivedCommand{
+		case ON:{
+			Scene_Night.sendCommand(1)
+		}
+		case OFF:{
+			Scene_Night.sendCommand(0)
+		}
+	}
+end
+
+rule "Night sceen changes"
+when
+	Item Scene_Night received command
+then
+	logInfo("Debug","Received command is " + receivedCommand.toString() )
+//mappings=[0="Off", 1="Falling", 2="Sleep", 3="Deep Sleep", 4="Waking Up"]
+	switch receivedCommand{
+		case 0:{
+			SypialniaRoleta.sendCommand(0)
+			sendPushbulletNote("[GoodMorningIoT]", "pejload")
+		}
+		case 1:{
+			SypialniaRoleta.sendCommand(100)
+			SypialniaLampka.sendCommand(OFF)
+			sendPushbulletNote("[GoodNightIoT]", "pejload")
+		}
+		case 2:{
+
+		}
+		case 3:{
+
+		}
+		case 4:{
+		}
+	}
+end
+
+rule "Change Night Scene"
+when
+	Time is noon
+then
+	Scene_Night.postUpdate(0)
+end

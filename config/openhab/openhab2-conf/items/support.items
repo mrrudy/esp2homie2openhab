@@ -1,0 +1,18 @@
+Switch Present "someone is home" <present> 
+Group:Switch:AND(OFF,ON) gPresent <present> // all presence sensors belong to this group
+Switch Present_Timer { expire="10m,command=OFF" }
+
+Switch Tasker1_rudy (gPresent)
+Switch Cell1_Basia (gPresent)
+Switch Present_rudy_android "Telefon rudego" (gPresent) {channel="network:pingdevice:rudyandroid:online"} 
+
+Number chart_period
+    "Graph Period"
+
+Group GraphTempThermo "Group of Temperature to chart"
+
+
+Number Scene_Night
+Switch GoodNightSwitch "Good Night Switch" ["Switchable"]
+
+

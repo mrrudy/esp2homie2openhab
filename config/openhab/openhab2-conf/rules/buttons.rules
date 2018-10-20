@@ -1,0 +1,24 @@
+rule "Night lamp button"
+when
+	Item SypialniaLampkaButton1 received update
+then
+	switch(SypialniaLampkaButton1.state) {
+		case "click" : {
+			if(SypialniaLampka.state==OFF) SypialniaLampka.sendCommand(ON)
+			else SypialniaLampka.sendCommand(OFF) 
+		}
+		case "longclick" : {
+			if(Scene_Night.state == 0) {
+				Scene_Night.sendCommand(1) 
+			}
+			else {
+				Scene_Night.sendCommand(0) 
+			}
+		}
+		case "2click" : {
+//			sendPushbulletNote("testy", "pejload")				
+			
+		}
+	}
+	
+end

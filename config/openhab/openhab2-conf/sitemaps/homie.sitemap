@@ -1,16 +1,17 @@
 sitemap homie label="Kalinowa"
 {
-	Frame label="Temperature" {
-		Text item=wemos2d1_online icon="switch" visibility=[wemos2d1_online==OFF]
-	    Text item=wemos2d1_tempDesired visibility=[wemos2d1_online==ON] {
+
+	Frame label="Production" {
+		Text item=KuchniaTermostat_online icon="switch" visibility=[KuchniaTermostat_online==OFF]
+	    Text item=KuchniaTermostat_tempReadout visibility=[KuchniaTermostat_online==ON] {
 	    	Frame label="Settings" {
-		    	Text item=wemos2d1_name
+		    	Text item=KuchniaTermostat_name
 	//			Slider item=backroomTemperatureDesired
-				Setpoint item=wemos2d1_tempDesired label="Thermostat [%.1f °C]" minValue=4 maxValue=40 step=0.5
-			    Text item=wemos2d1_tempReadout
-			    Switch item=wemos2d1_switch
-			    Setpoint item=wemos2d1_setting_temperatureInterval minValue=3 maxValue=60 step=1
-			    Setpoint item=wemos2d1_setting_histeresis minValue=0.1 maxValue=5 step=0.1
+				Setpoint item=KuchniaTermostat_tempDesired label="Thermostat [%.1f °C]" minValue=4 maxValue=40 step=0.5
+			    Text item=KuchniaTermostat_tempReadout
+			    Switch item=KuchniaTermostat_switch
+			    Setpoint item=KuchniaTermostat_setting_temperatureInterval minValue=3 maxValue=60 step=1
+			    Setpoint item=KuchniaTermostat_setting_histeresis minValue=0.1 maxValue=5 step=0.1
 		    }
 		    Frame label="Graphs"{
 				Switch item=chart_period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week", 3="Month", 4="Year"]
@@ -21,38 +22,73 @@ sitemap homie label="Kalinowa"
 				Chart item=GraphTempThermo  period=Y refresh=3600 visibility=[chart_period==4]
 			}
 		}
-}
 
-//Slider item=tempThermostat
+		Text item=SypialniaRoleta_online icon="switch" visibility=[SypialniaRoleta_online==OFF]
+	    Switch item=SypialniaRoleta visibility=[SypialniaRoleta_online==ON]
+	    Slider item=SypialniaRoleta visibility=[SypialniaRoleta_online==ON] 
+
+		Slider item=PiwnicaZawor_blinds icon="humidity" visibility=[PiwnicaZawor_online==ON] 
+		Text item=PiwnicaZawor_online icon="switch" visibility=[PiwnicaZawor_online==OFF]
+		
+		Switch item=SypialniaLampka icon="light" visibility=[SypialniaLampka_online==ON] 
+		Text item=SypialniaLampka_online icon="switch" visibility=[SypialniaLampka_online==OFF]
+		
+	}
+
+	Frame label="Config" icon="settings" {
+
+
+		Text label="Roleta sypialnia config" icon="settings" {
+	    		Setpoint item=SypialniaRoleta_setting_closingTime minValue=1000 maxValue=60000 step=500
+	    }
+
+		Text label="Zawor 3dr config" icon="settings" {
+			Text item=PiwnicaZawor_name 
+			Text item=PiwnicaZawor_online icon="switch"
+			Switch item=PiwnicaZawor_blinds
+			Text item=PiwnicaZawor_address
+		}
+
+		Text label="Night light config" icon="settings" {
+			Text item=SypialniaLampka_name 
+			Text item=SypialniaLampka_online icon="switch"
+			Text item=SypialniaLampka_address
+		}
+	}
 	Frame label="WorkInProgress" {
-		Text item=sonoffcef_name
-		Text item=sonoffcef_online icon="switch" visibility=[sonoffcef_online==OFF]
-	    Switch item=sonoffcef_center_switch visibility=[sonoffcef_online==ON]
-	/*    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
-	 */
-	 	Text item=sonoffacf_name
-		Text item=sonoffacf_online icon="switch" visibility=[sonoffacf_online==OFF]
-	    Switch item=sonoffacf_center_switch visibility=[sonoffacf_online==ON]
+	
+	Selection item=Scene_Night label="‌‌Night scene" mappings=[0="Off", 1="Falling", 2="Sleep", 3="Deep Sleep", 4="Waking Up"]
+	
 
-		Text item=supla1_name
-		Text item=supla1_online icon="switch" visibility=[supla1_online==OFF]
-	    Switch item=supla1_blinds visibility=[supla1_online==ON]
-	    Slider item=supla1_blinds visibility=[supla1_online==ON]
+		Text item=BiurkoRoleta_online icon="switch" visibility=[BiurkoRoleta_online==OFF]
+	    Switch item=BiurkoRoleta visibility=[BiurkoRoleta_online==ON]
+	    Slider item=BiurkoRoleta visibility=[BiurkoRoleta_online==ON] 
+	    Setpoint item=BiurkoRoleta_setting_courseTimeUP minValue=1000 maxValue=60000 step=500
+	    Setpoint item=BiurkoRoleta_setting_courseTimeDOWN minValue=0 maxValue=60000 step=500
+	    Switch item=BiurkoRoleta_setting_reverseRelays
 
-	    Text item=supla2_name
-		Text item=supla2_online icon="switch" visibility=[supla2_online==OFF]
-	    Switch item=supla2_blinds visibility=[supla2_online==ON]
-	    Slider item=supla2_blinds visibility=[supla2_online==ON]
 
-	    Text item=RoletaSypialnia_name
-		Text item=RoletaSypialnia_online icon="switch" visibility=[RoletaSypialnia_online==OFF]
-	    Switch item=RoletaSypialnia_blinds visibility=[RoletaSypialnia_online==ON]
-	    Slider item=RoletaSypialnia_blinds visibility=[RoletaSypialnia_online==ON]
-
-			Text item=ZaworPiwnica_name
-			Text item=ZaworPiwnica_online icon="switch" visibility=[ZaworPiwnica_online==OFF]
-			Switch item=ZaworPiwnica_blinds visibility=[ZaworPiwnica_online==ON]
-			Slider item=ZaworPiwnica_blinds visibility=[ZaworPiwnica_online==ON]
+	Text item=SypialniaLampkaButton1	
+		Text label="Testing" { 
+			Text item=sonoffcef_name
+			Text item=sonoffcef_online icon="switch" visibility=[sonoffcef_online==OFF]
+		    Switch item=sonoffcef_center_switch visibility=[sonoffcef_online==ON]
+		/*    Switch item=sonoff1_right_switch visibility=[sonoff1_online==ON]
+		 */
+		 	Text item=sonoffacf_name
+			Text item=sonoffacf_online icon="switch" visibility=[sonoffacf_online==OFF]
+		    Switch item=sonoffacf_center_switch visibility=[sonoffacf_online==ON]
+	
+			Text item=supla1_name
+			Text item=supla1_online icon="switch" visibility=[supla1_online==OFF]
+		    Switch item=supla1_blinds visibility=[supla1_online==ON]
+		    Slider item=supla1_blinds visibility=[supla1_online==ON]
+	
+		    Text item=supla2_name
+			Text item=supla2_online icon="switch" visibility=[supla2_online==OFF]
+		    Switch item=supla2_blinds visibility=[supla2_online==ON]
+		    Slider item=supla2_blinds visibility=[supla2_online==ON]
+		}
 
 	}
 Frame label="Presence" {
@@ -65,7 +101,7 @@ Frame label="Presence" {
 		Frame label="sensors" {
 			Switch item=Tasker1_rudy
 			Switch item=Cell1_Basia
-			Switch item=Manual1_any
+			Switch item=Present_rudy_android
 		}
 		} 
 	}

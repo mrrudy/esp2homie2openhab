@@ -1,0 +1,6 @@
+
+sitemap homie label="Kalinowa"
+{
+	    Slider item=SypialniaRoleta
+		Switch item=Tasker1_rudy
+}
