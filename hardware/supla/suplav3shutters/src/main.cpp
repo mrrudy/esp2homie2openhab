@@ -193,13 +193,13 @@ void setup() {
         Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
 
         shuttersCourseTimeUP.setDefaultValue(21000).setValidator([] (long candidate) {
-          return candidate >= 1000;
+                return candidate >= 1000;
         });
         shuttersCourseTimeDOWN.setDefaultValue(0).setValidator([] (long candidate) {
-          return candidate >= 0;
+                return candidate >= 0;
         });
         shuttersReverseRelays.setDefaultValue(false).setValidator([] (bool candidate) {
-          return (candidate == true) || (candidate == false);
+                return (candidate == true) || (candidate == false);
         });
 
         Homie.setup();
