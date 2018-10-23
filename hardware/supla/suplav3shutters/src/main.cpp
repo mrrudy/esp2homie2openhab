@@ -2,8 +2,25 @@
 #include <OneButton.h>
 #include <EEPROM.h>
 #include <Shutters.h>
+#include <Ticker.h>
 
 #include "main.h"
+
+Ticker watchdogTick;
+
+unsigned long watchdogLastFeed=999999; //ensure that the watchdog does not bite before setup
+#define watchdogTimeout 60*1000 //time after which the watchdog resets
+
+void ICACHE_RAM_ATTR ISRwatchdog(void)
+{
+  Serial.printf("Watchdog check: %lu\n\r", millis());
+  if (millis()-watchdogLastFeed > watchdogTimeout)
+  {
+    Serial.println("Watchdog resets.");
+    Serial.printf("Current time: %lu, last feed: %lu, difference: %lu\n\r", millis(), watchdogLastFeed, millis()-watchdogLastFeed);
+    ESP.restart();
+  }
+}
 
 bool relaySwitch(int whichRelay, int channel) {
         digitalWrite(whichRelay, channel);
@@ -247,10 +264,13 @@ void setup() {
 //        .setLevel(30) // Go to 30%
         ;
 //        Debugf("Setting course of shutters to %d", shuttersClosingTime.get());
+    watchdogLastFeed=millis()+5*1000; //give setup some additional time, enought to run its magic
+    Serial.printf("initializing watchdog with margin: %lu, current time is: %lu\n\r", watchdogLastFeed, millis());
+    watchdogTick.attach(10, ISRwatchdog);
 }
 
 void loop() {
-
+        if(Homie.isConnected()) { watchdogLastFeed=millis(); }//if homie is connected feed the dog
         Homie.loop();
         button1.tick();
         button2.tick();
