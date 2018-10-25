@@ -2,30 +2,9 @@
 #include <OneButton.h>
 #include <EEPROM.h>
 #include <Shutters.h>
-#include <Ticker.h>
 
 #include "main.h"
 
-Ticker watchdogTick;
-
-unsigned long watchdogLastFeed=999999; //ensure that the watchdog does not bite before setup
-#define watchdogTimeout 60*1000 //time after which the watchdog resets
-
-void ICACHE_RAM_ATTR ISRwatchdog(void)
-{
-  Serial.printf("Watchdog check: %lu\n\r", millis());
-  if (millis()-watchdogLastFeed > watchdogTimeout)
-  {
-    Serial.println("Watchdog resets.");
-    Serial.printf("Current time: %lu, last feed: %lu, difference: %lu\n\r", millis(), watchdogLastFeed, millis()-watchdogLastFeed);
-    ESP.restart();
-  }
-}
-
-bool relaySwitch(int whichRelay, int channel) {
-        digitalWrite(whichRelay, channel);
-        return (true);
-}
 
 const byte eepromOffset = 0;
 //const unsigned long upCourseTime = 21 * 1000;
@@ -49,8 +28,6 @@ byte whichRelayIsWorking = UPRELAY;
 HomieSetting<long> shuttersCourseTimeUP("courseTimeUP", "How long (ms) does it take for shutters to run UP");
 HomieSetting<long> shuttersCourseTimeDOWN("courseTimeDOWN", "How long (ms) does it take for shutters to run DOWN");
 HomieSetting<bool> shuttersReverseRelays("reverseRelays", "Should UP and DOWN relays be switched?");
-
-
 
 void shuttersOperationHandler(Shutters* s, ShuttersOperation operation) {
 //        relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
@@ -78,7 +55,7 @@ void readInEeprom(char* dest, byte length) {
         for (byte i = 0; i < length; i++) {
                 dest[i] = EEPROM.read(eepromOffset + i);
         }
-        Debugf("read from eeprom position: %d %%", dest);
+        Debugf("read from eeprom position: %d %%", (int) dest);
 }
 
 void shuttersWriteStateHandler(Shutters* shutters, const char* state, byte length) {
@@ -264,13 +241,11 @@ void setup() {
 //        .setLevel(30) // Go to 30%
         ;
 //        Debugf("Setting course of shutters to %d", shuttersClosingTime.get());
-    watchdogLastFeed=millis()+5*1000; //give setup some additional time, enought to run its magic
-    Serial.printf("initializing watchdog with margin: %lu, current time is: %lu\n\r", watchdogLastFeed, millis());
-    watchdogTick.attach(10, ISRwatchdog);
+        all_common_setup();
 }
 
 void loop() {
-        if(Homie.isConnected()) { watchdogLastFeed=millis(); }//if homie is connected feed the dog
+        all_common_loop();
         Homie.loop();
         button1.tick();
         button2.tick();
