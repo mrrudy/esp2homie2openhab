@@ -6,11 +6,13 @@
 #define UPRELAY LEFTRELAYPIN
 #define ENGINELINE LEFT //to which side the cable that connects power to the SHUTTERELAY is connected (should be the Normally Open channel)
 
-#define USERLIB_USE_WATCHDOG_WIFI             TRUE
-#define watchdogTimeout 80*1000 //time after which the watchdog resets
 
 #include "board.h"
 #include "all_common_log.h"
 #include "all_common_relay.h"
 //#include "userconf.h"
 #include "all_common.h"
+
+
+void click1(void);
+void click2(void);

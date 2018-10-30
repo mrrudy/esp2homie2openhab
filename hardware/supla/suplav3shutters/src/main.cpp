@@ -5,19 +5,21 @@
 
 #include "main.h"
 
+#if defined(BOARD_BUTTONS)
+char default_prefix[]="button_";
+GPIO_button buttons[BOARD_BUTTONS] = {
+                                              {BUTTONPIN1, (char *)"1", default_prefix, null_function, null_function, null_function, OneButton (BUTTONPIN1, true), HomieNode ("but1", "button")}
+                                              ,{BUTTONPIN2, (char *)"2", default_prefix, click2, null_function, null_function, OneButton (BUTTONPIN2, true), HomieNode ("but2", "button")}
+                                              ,{BUTTONPIN3, (char *)"3", default_prefix, click1, null_function, null_function, OneButton (BUTTONPIN3, true), HomieNode ("but3", "button")}
+                                            };
+#endif
 
 const byte eepromOffset = 0;
 //const unsigned long upCourseTime = 21 * 1000;
 //const unsigned long downCourseTime = 21 * 1000;
 const float calibrationRatio = 0.2;
+//TODO: add GPIObuttonForHomie(PIN, "name_preffix")
 
-OneButton button1(BUTTONPIN1, true);
-OneButton button2(BUTTONPIN2, true);
-OneButton button3(BUTTONPIN3, true);
-
-HomieNode button1Node("b1", "button");
-HomieNode button2Node("b2", "button");
-HomieNode button3Node("b3", "button");
 
 HomieNode blinds("blinds1", "blinds");
 
@@ -93,8 +95,6 @@ bool blindsMoveHandler(const HomieRange& range, const String& value) {
 
 // This function will be called when the button1 was pressed shortly.
 void click1() {
-        Debug("button1 click");
-        button1Node.setProperty("event").send("click"); //sending this but be sure not to double react on it as below code already enables relay
         if(!shutters.isIdle()) { //if blinds are moving stop them
                 shutters.stop();
                 Debug("stopping shutters becouse of click1");
@@ -103,12 +103,11 @@ void click1() {
                 shutters.setLevel((int)100); //move them 100% (down)
                 Debug("moving shutters down becouse of click1");
         }
+
 } // click1
 
 // This function will be called when the button2 was pressed shortly.
 void click2() {
-        Debug("button2 click");
-        button2Node.setProperty("event").send("click"); //sending this but be sure not to double react on it as below code already enables relay
         if(!shutters.isIdle()) { //if blinds are moving stop them
                 shutters.stop();
                 Debug("stopping shutters becouse of click2");
@@ -119,62 +118,16 @@ void click2() {
         }
 }
 
-// This function will be called when the button1 was pressed 2 times in a short timeframe.
-void doubleclick1() {
-        button1Node.setProperty("event").send("2click");
-} // doubleclick1
-
-
-// This function will be called once, when the button1 is released after beeing pressed for a long time.
-void longPressStart1() {
-        button1Node.setProperty("event").send("longclick");
-} // longPressStop1
-
-
-// This function will be called when the button2 was pressed 2 times in a short timeframe.
-void doubleclick2() {
-        button2Node.setProperty("event").send("2click");
-} // doubleclick2
-
-
-// This function will be called once, when the button2 is released after beeing pressed for a long time.
-void longPressStart2() {
-        button2Node.setProperty("event").send("longclick");
-} // longPressStop2
-
-
-void click3() {
-        button3Node.setProperty("event").send("click");
-} // click3
-
-
-// This function will be called when the button3 was pressed 3 times in a short timeframe.
-void doubleclick3() {
-        button3Node.setProperty("event").send("2click");
-} // doubleclick3
-
-
-// This function will be called once, when the button3 is released after beeing pressed for a long time.
-void longPressStart3() {
-        button3Node.setProperty("event").send("longclick");
-} // longPressStop3
 
 void setup() {
+
         pinMode(UPRELAY, OUTPUT);
         pinMode(DOWNRELAY, OUTPUT);
 
         relaySwitch(UPRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
         relaySwitch(DOWNRELAY,!ENGINELINE); //whatever we will do first we stop the shutters from moving
 
-        button1.attachClick(click1);
-        button1.attachDoubleClick(doubleclick1);
-        button1.attachLongPressStart(longPressStart1);
-        button2.attachClick(click2);
-        button2.attachDoubleClick(doubleclick2);
-        button2.attachLongPressStart(longPressStart2);
-        button3.attachClick(click3);
-        button3.attachDoubleClick(doubleclick3);
-        button3.attachLongPressStart(longPressStart3);
+
 
 
 //########## HOMIE stuff
@@ -183,6 +136,7 @@ void setup() {
 #else
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
 #endif
+        Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
         Homie.setLedPin(LEDPIN, HIGH);
         Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
 
@@ -199,32 +153,11 @@ void setup() {
         Homie.setup();
 
         blinds.setProperty("position").send("NaN");
-//  relay1OnHandler({true,0}, relay1_state?"true":"false"); //sets the default state of the switch. it does not report to mqtt! TODO: report to the mqtt initial state of the switch [relay1.setProperty("on").send("false"); does not work here]
         blinds.setProperty("unit").send("%");
         blinds.setProperty("format").send("integer");
         blinds.advertise("position").settable(blindsMoveHandler);
         blinds.advertise("unit");
         blinds.advertise("format");
-
-
-        button1Node.setProperty("datatype").send("enum");
-        button1Node.setProperty("format").send("click,2click,longclick");
-        button1Node.advertise("datatype");
-        button1Node.advertise("format");
-        button1Node.advertise("event");
-
-        button2Node.setProperty("datatype").send("enum");
-        button2Node.setProperty("format").send("click,2click,longclick");
-        button2Node.advertise("datatype");
-        button2Node.advertise("format");
-        button2Node.advertise("event");
-
-        button3Node.setProperty("datatype").send("enum");
-        button3Node.setProperty("format").send("click,2click,longclick");
-        button3Node.advertise("datatype");
-        button3Node.advertise("format");
-        button3Node.advertise("event");
-
 
   #ifdef ESP8266
         EEPROM.begin(512);
@@ -240,15 +173,12 @@ void setup() {
         .begin()
 //        .setLevel(30) // Go to 30%
         ;
-//        Debugf("Setting course of shutters to %d", shuttersClosingTime.get());
+        Debugf("\nGPIO_BUTTONS in setup: %d\n", BOARD_BUTTONS);
         all_common_setup();
 }
 
 void loop() {
         all_common_loop();
         Homie.loop();
-        button1.tick();
-        button2.tick();
-        button3.tick();
         shutters.loop();
 }
