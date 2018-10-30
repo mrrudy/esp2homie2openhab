@@ -67,6 +67,7 @@ for(int i=0; i<BOARD_BUTTONS ; i++) {
 void null_function(void) {
   Debug("No function on MC attached to me (i'm null_function())");
 }
+
 void default_click_handler(void) {
   for(int i=0; i<BOARD_BUTTONS; i++) {
     if(buttons[i].oneButtonInsance.getPressedTicks() > 0) { //TODO: need a better method to detect which button was pressed as this will fail if 2 are pressed a the same time (adjust OneButton library to have IwasTriggered bool)
@@ -79,7 +80,6 @@ void default_click_handler(void) {
 }
 
 void default_doubleclick_handler(void) {
-  Debug("serwing 2click");
   for(int i=0; i<BOARD_BUTTONS; i++) {
     if(buttons[i].oneButtonInsance.getPressedTicks() < 0) { //TODO: need a better method to detect which button was pressed as this will fail if 2 are pressed a the same time (adjust OneButton library to have IwasTriggered bool)
       Debugf("Button number: %d, got 2CLICK, my Ticks= %d", i, buttons[i].oneButtonInsance.getPressedTicks());
@@ -91,8 +91,6 @@ void default_doubleclick_handler(void) {
 }
 
 void default_longclick_handler(void) {
-  Debug("serwing longclick");
-
   for(int i=0; i<BOARD_BUTTONS; i++) {
     Debugf("Button number: %d, has ticks= %d", i, buttons[i].oneButtonInsance.getPressedTicks());
     if(buttons[i].oneButtonInsance.getPressedTicks() < -500) { //TODO: need a better method to detect which button was pressed as this will fail if 2 are pressed a the same time (adjust OneButton library to have IwasTriggered bool)

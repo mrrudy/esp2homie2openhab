@@ -173,7 +173,6 @@ void setup() {
         .begin()
 //        .setLevel(30) // Go to 30%
         ;
-        Debugf("\nGPIO_BUTTONS in setup: %d\n", BOARD_BUTTONS);
         all_common_setup();
 }
 
