@@ -25,13 +25,11 @@ void testowa(int x);
 
 struct GPIO_button {
   int GPIO;
-  char *name;
-  char *prefix;
+  const char *name;
   void (*click_handler)(void);
   void (*doubleclick_handler)(void);
   void (*longclick_handler)(void);
-  OneButton oneButtonInsance;
-  HomieNode buttonHomieNode;
+  HomieNode *HomieNodeptr;
   OneButton *oneButtonptr;
 };
 

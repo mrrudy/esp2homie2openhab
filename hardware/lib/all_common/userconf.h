@@ -9,7 +9,7 @@
 #endif
 
 #if !defined(USERLIB_USE_WATCHDOG_WIFI)
-  #define USERLIB_USE_WATCHDOG_WIFI             FALSE
+  #define USERLIB_USE_WATCHDOG_WIFI             false
 #endif
 
 #if defined(USERLIB_USE_WATCHDOG_WIFI)

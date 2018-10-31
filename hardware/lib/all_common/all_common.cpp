@@ -27,7 +27,7 @@ void all_common_setup(){
   #endif
         Homie.disableResetTrigger();    //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
 
-        Homie.setup();
+
 
 #if defined(USERLIB_USE_WATCHDOG_WIFI)
         watchdogLastFeed=millis()+5*1000; //give setup some additional time, enought to run its magic
@@ -38,22 +38,23 @@ void all_common_setup(){
         Debugf("\n\nValue of GPIO_BUTTONS: %d\n\n", BOARD_BUTTONS);
 
 #if defined(BOARD_BUTTONS)
-
         for(int i=0; i<BOARD_BUTTONS; i++) {
-                buttons[i].oneButtonInsance.attachClick(default_click_handler);
-                buttons[i].oneButtonInsance.attachDoubleClick(default_doubleclick_handler);
-                buttons[i].oneButtonInsance.attachLongPressStart(default_longclick_handler);
+                buttons[i].oneButtonptr= new OneButton(buttons[i].GPIO,true);
+                buttons[i].oneButtonptr->attachClick(default_click_handler);
+                buttons[i].oneButtonptr->attachDoubleClick(default_doubleclick_handler);
+                buttons[i].oneButtonptr->attachLongPressStart(default_longclick_handler);
 
-                buttons[i].buttonHomieNode.setProperty("datatype").send("enum");
-                buttons[i].buttonHomieNode.setProperty("format").send("click,2click,longclick");
-                buttons[i].buttonHomieNode.advertise("datatype");
-                buttons[i].buttonHomieNode.advertise("format");
-                buttons[i].buttonHomieNode.advertise("event");
+                buttons[i].HomieNodeptr=new HomieNode (buttons[i].name, "button");
+                buttons[i].HomieNodeptr->setProperty("datatype").send("enum");
+                buttons[i].HomieNodeptr->setProperty("format").send("click,2click,longclick");
+                buttons[i].HomieNodeptr->advertise("datatype");
+                buttons[i].HomieNodeptr->advertise("format");
+                buttons[i].HomieNodeptr->advertise("event");
 
-buttons[i].oneButtonptr= new OneButton(buttons[i].GPIO,true);
                 Debugf("Setting up button: %d", i);
         }
 #endif
+        Homie.setup(); //needs to be after node declaraction if it is dynamic (new)
 }
 
 void all_common_loop(){
@@ -64,7 +65,7 @@ void all_common_loop(){
 
 #if defined(BOARD_BUTTONS)
         for(int i=0; i<BOARD_BUTTONS; i++) {
-                buttons[i].oneButtonInsance.tick();
+                buttons[i].oneButtonptr->tick();
 //  Serial.printf("Ticking for button: %d", i);
         }
 #endif
@@ -79,9 +80,9 @@ void null_function(void) {
 
 void default_click_handler(void) {
         for(int i=0; i<BOARD_BUTTONS; i++) {
-                if(buttons[i].oneButtonInsance.wasIPressed()) {
-                        Debugf("Button number: %d, got CLICK, my Ticks= %d", i, buttons[i].oneButtonInsance.getPressedTicks());
-                        buttons[i].buttonHomieNode.setProperty("event").send("click");
+                if(buttons[i].oneButtonptr->wasIPressed()) {
+                        Debugf("Button number: %d, got CLICK, my Ticks= %d", i, buttons[i].oneButtonptr->getPressedTicks());
+                        buttons[i].HomieNodeptr->setProperty("event").send("click");
                         buttons[i].click_handler();
                         break;
                 }
@@ -90,9 +91,9 @@ void default_click_handler(void) {
 
 void default_doubleclick_handler(void) {
         for(int i=0; i<BOARD_BUTTONS; i++) {
-                if(buttons[i].oneButtonInsance.wasIPressed()) {
-                        Debugf("Button number: %d, got 2CLICK, my Ticks= %d", i, buttons[i].oneButtonInsance.getPressedTicks());
-                        buttons[i].buttonHomieNode.setProperty("event").send("2click");
+                if(buttons[i].oneButtonptr->wasIPressed()) {
+                        Debugf("Button number: %d, got 2CLICK, my Ticks= %d", i, buttons[i].oneButtonptr->getPressedTicks());
+                        buttons[i].HomieNodeptr->setProperty("event").send("2click");
                         buttons[i].doubleclick_handler();
                         break;
                 }
@@ -101,9 +102,9 @@ void default_doubleclick_handler(void) {
 
 void default_longclick_handler(void) {
         for(int i=0; i<BOARD_BUTTONS; i++) {
-                if(buttons[i].oneButtonInsance.wasIPressed()) {
-                        Debugf("Button number: %d, got LongCLICK, my Ticks= %d", i, buttons[i].oneButtonInsance.getPressedTicks());
-                        buttons[i].buttonHomieNode.setProperty("event").send("longclick");
+                if(buttons[i].oneButtonptr->wasIPressed()) {
+                        Debugf("Button number: %d, got LongCLICK, my Ticks= %d", i, buttons[i].oneButtonptr->getPressedTicks());
+                        buttons[i].HomieNodeptr->setProperty("event").send("longclick");
                         buttons[i].longclick_handler();
                         break;
                 }

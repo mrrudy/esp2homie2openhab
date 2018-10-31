@@ -6,12 +6,11 @@
 #include "main.h"
 
 #if defined(BOARD_BUTTONS)
-char default_prefix[]="button_";
 GPIO_button buttons[BOARD_BUTTONS] = {
-                                              {BUTTONPIN1, (char *)"1", default_prefix, shuttersMoveDownOrStop, null_function, null_function,  OneButton (BUTTONPIN1, true), HomieNode ("but1", "button")}
-                                              ,{BUTTONPIN2, (char *)"2", default_prefix, shuttersMoveUpOrStop, null_function, null_function, OneButton (BUTTONPIN2, true), HomieNode ("but2", "button")}
-                                              ,{BUTTONPIN3, (char *)"3", default_prefix, shuttersMoveDownOrStop, shuttersMoveUpOrStop, null_function, OneButton (BUTTONPIN3, true), HomieNode ("but3", "button")}
-                                            }; 
+                                              {BUTTONPIN1, "but1", shuttersMoveDownOrStop, null_function, null_function}
+                                              ,{BUTTONPIN2, "but2", shuttersMoveUpOrStop, null_function, null_function}
+                                              ,{BUTTONPIN3, "but3" , shuttersMoveDownOrStop, shuttersMoveUpOrStop}
+                                          };
 #endif
 
 const byte eepromOffset = 0;
