@@ -8,9 +8,9 @@
 #if defined(BOARD_BUTTONS)
 char default_prefix[]="button_";
 GPIO_button buttons[BOARD_BUTTONS] = {
-                                              {BUTTONPIN1, (char *)"1", default_prefix, null_function, null_function, null_function, OneButton (BUTTONPIN1, true), HomieNode ("but1", "button")}
-                                              ,{BUTTONPIN2, (char *)"2", default_prefix, click2, null_function, null_function, OneButton (BUTTONPIN2, true), HomieNode ("but2", "button")}
-                                              ,{BUTTONPIN3, (char *)"3", default_prefix, click1, null_function, null_function, OneButton (BUTTONPIN3, true), HomieNode ("but3", "button")}
+                                              {BUTTONPIN1, (char *)"1", default_prefix, shuttersMoveDownOrStop, null_function, null_function, OneButton (BUTTONPIN1, true), HomieNode ("but1", "button")}
+                                              ,{BUTTONPIN2, (char *)"2", default_prefix, shuttersMoveUpOrStop, null_function, null_function, OneButton (BUTTONPIN2, true), HomieNode ("but2", "button")}
+                                              ,{BUTTONPIN3, (char *)"3", default_prefix, shuttersMoveDownOrStop, shuttersMoveUpOrStop, null_function, OneButton (BUTTONPIN3, true), HomieNode ("but3", "button")}
                                             };
 #endif
 
@@ -94,7 +94,7 @@ bool blindsMoveHandler(const HomieRange& range, const String& value) {
 
 
 // This function will be called when the button1 was pressed shortly.
-void click1() {
+void shuttersMoveDownOrStop() {
         if(!shutters.isIdle()) { //if blinds are moving stop them
                 shutters.stop();
                 Debug("stopping shutters becouse of click1");
@@ -107,7 +107,7 @@ void click1() {
 } // click1
 
 // This function will be called when the button2 was pressed shortly.
-void click2() {
+void shuttersMoveUpOrStop() {
         if(!shutters.isIdle()) { //if blinds are moving stop them
                 shutters.stop();
                 Debug("stopping shutters becouse of click2");
@@ -131,12 +131,7 @@ void setup() {
 
 
 //########## HOMIE stuff
-#ifdef DEBUG_ENABLED
-        Serial.begin(74880);
-#else
-        Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
-#endif
-        Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
+
         Homie.setLedPin(LEDPIN, HIGH);
         Homie_setFirmware(BOARD_FAMILY_NAME "-" BOARD_NAME "-" BOARD_FUTURES, VERSION);
 
@@ -149,8 +144,6 @@ void setup() {
         shuttersReverseRelays.setDefaultValue(false).setValidator([] (bool candidate) {
                 return (candidate == true) || (candidate == false);
         });
-
-        Homie.setup();
 
         blinds.setProperty("position").send("NaN");
         blinds.setProperty("unit").send("%");

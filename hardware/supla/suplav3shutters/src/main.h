@@ -14,5 +14,5 @@
 #include "all_common.h"
 
 
-void click1(void);
-void click2(void);
+void shuttersMoveDownOrStop(void);
+void shuttersMoveUpOrStop(void);
