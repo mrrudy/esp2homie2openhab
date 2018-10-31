@@ -32,6 +32,7 @@ struct GPIO_button {
   void (*longclick_handler)(void);
   OneButton oneButtonInsance;
   HomieNode buttonHomieNode;
+  OneButton *oneButtonptr;
 };
 
 typedef struct GPIO_button GPIO_button;

@@ -49,6 +49,8 @@ void all_common_setup(){
                 buttons[i].buttonHomieNode.advertise("datatype");
                 buttons[i].buttonHomieNode.advertise("format");
                 buttons[i].buttonHomieNode.advertise("event");
+
+buttons[i].oneButtonptr= new OneButton(buttons[i].GPIO,true);
                 Debugf("Setting up button: %d", i);
         }
 #endif
