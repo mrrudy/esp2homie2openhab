@@ -8,8 +8,12 @@
 #define BOARD_BUTTONS 0
 #endif
 
+#if !defined(BOARD_SWITCHES)
+#define BOARD_SWITCHES 0
+#endif
+
 #if !defined(USERLIB_USE_WATCHDOG_WIFI)
-  #define USERLIB_USE_WATCHDOG_WIFI             false
+//  #define USERLIB_USE_WATCHDOG_WIFI             true
 #endif
 
 #if defined(USERLIB_USE_WATCHDOG_WIFI)

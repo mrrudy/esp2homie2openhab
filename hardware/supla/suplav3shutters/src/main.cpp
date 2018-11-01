@@ -1,5 +1,4 @@
 #include <Homie.h>
-#include <OneButton.h>
 #include <EEPROM.h>
 #include <Shutters.h>
 
@@ -17,7 +16,6 @@ const byte eepromOffset = 0;
 //const unsigned long upCourseTime = 21 * 1000;
 //const unsigned long downCourseTime = 21 * 1000;
 const float calibrationRatio = 0.2;
-//TODO: add GPIObuttonForHomie(PIN, "name_preffix")
 
 
 HomieNode blinds("blinds1", "blinds");

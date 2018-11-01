@@ -20,24 +20,27 @@ void ICACHE_RAM_ATTR ISRwatchdog(void)
 void all_common_setup(){
 
 
-  #ifdef DEBUG_ENABLED
+#ifdef DEBUG_ENABLED
         Serial.begin(74880);
-  #else
-        Homie.disableLogging();   //there is a bug and if this is enabled you get a boot loop
-  #endif
-        Homie.disableResetTrigger();    //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
+#else
+        Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
+#endif
+        Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
 
+#if BOARD_SWITCHES > 0
+        for(int i=0; i<BOARD_SWITCHES; i++) {
+          
+        }
+#endif
 
 
 #if defined(USERLIB_USE_WATCHDOG_WIFI)
         watchdogLastFeed=millis()+5*1000; //give setup some additional time, enought to run its magic
-        Debugf("initializing watchdog with margin: %lu, current time is: %lu\n\r", watchdogLastFeed, millis());
+        Debugf("\n\rinitializing watchdog with margin: %lu, current time is: %lu\n\r", watchdogLastFeed, millis());
         watchdogTick.attach(10, ISRwatchdog);
 #endif /*USERLIB_USE_WATCHDOG_WIFI*/
 
-        Debugf("\n\nValue of GPIO_BUTTONS: %d\n\n", BOARD_BUTTONS);
-
-#if defined(BOARD_BUTTONS)
+#if BOARD_BUTTONS > 0
         for(int i=0; i<BOARD_BUTTONS; i++) {
                 buttons[i].oneButtonptr= new OneButton(buttons[i].GPIO,true);
                 buttons[i].oneButtonptr->attachClick(default_click_handler);
@@ -63,7 +66,7 @@ void all_common_loop(){
 
 #endif /*USERLIB_USE_WATCHDOG_WIFI*/
 
-#if defined(BOARD_BUTTONS)
+#if BOARD_BUTTONS > 0
         for(int i=0; i<BOARD_BUTTONS; i++) {
                 buttons[i].oneButtonptr->tick();
 //  Serial.printf("Ticking for button: %d", i);
@@ -72,7 +75,7 @@ void all_common_loop(){
 
 }
 
-#if defined(BOARD_BUTTONS)
+#if BOARD_BUTTONS > 0
 
 void null_function(void) {
         Debug("No function on MC attached to me (i'm null_function())");

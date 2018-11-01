@@ -1,7 +1,6 @@
 #ifndef all_common_H_
 #define all_common_H_
 #include "userconf.h"
-#include <OneButton.h>
 #include <Homie.h>
 
 void all_common_setup();
@@ -17,11 +16,9 @@ void all_common_loop();
 
 #endif /*USERLIB_USE_WATCHDOG_WIFI*/
 
-#if defined (BOARD_BUTTONS)
+#if BOARD_BUTTONS > 0
 
-void null_function(void);
-void homie_button_handler(void);
-void testowa(int x);
+#include <OneButton.h>
 
 struct GPIO_button {
   int GPIO;
@@ -34,15 +31,29 @@ struct GPIO_button {
 };
 
 typedef struct GPIO_button GPIO_button;
-
-//extern button buttons[];
 extern GPIO_button buttons[];
+
+void null_function(void);
 
 void default_click_handler(void);
 void default_doubleclick_handler(void);
 void default_longclick_handler(void);
 
-#endif /*GPIO_BUTTONS*/
+#endif /*BOARD_BUTTONS*/
+
+#if BOARD_SWITCHES > 0
+struct GPIO_switch {
+  int GPIO;
+  const char *name;
+  bool (*relay_handler)(const HomieRange& range, const String& value);
+  HomieNode *HomieNodeptr;
+};
+
+typedef struct GPIO_switch GPIO_switch;
+extern GPIO_switch switches[];
+bool defaultRelayHandler(const HomieRange& range, const String& value);
+
+#endif /*BOARD_SWITCHES*/
 
 
 #endif /*all_common_H_*/
