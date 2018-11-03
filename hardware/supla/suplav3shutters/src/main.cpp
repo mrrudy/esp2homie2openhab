@@ -4,12 +4,20 @@
 
 #include "main.h"
 
-#if defined(BOARD_BUTTONS)
+#if BOARD_BUTTONS > 0
 GPIO_button buttons[BOARD_BUTTONS] = {
-                                              {BUTTONPIN1, "but1", shuttersMoveDownOrStop, null_function, null_function}
-                                              ,{BUTTONPIN2, "but2", shuttersMoveUpOrStop, null_function, null_function}
-                                              ,{BUTTONPIN3, "but3" , shuttersMoveDownOrStop, shuttersMoveUpOrStop}
-                                          };
+        {BUTTONPIN1, "but1", shuttersMoveDownOrStop, null_function, null_function}
+        ,{BUTTONPIN2, "but2", shuttersMoveUpOrStop, null_function, null_function}
+        ,{BUTTONPIN3, "but3", shuttersMoveDownOrStop, shuttersMoveUpOrStop}
+};
+#endif
+
+#if BOARD_SWITCHES > 0
+BoardSwitch switches[BOARD_SWITCHES]= {
+        {BoardSwitch(UPRELAY, "lewy")}
+        ,{BoardSwitch(DOWNRELAY, "prawy")}
+};  
+
 #endif
 
 const byte eepromOffset = 0;

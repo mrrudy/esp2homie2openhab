@@ -20,6 +20,24 @@ void all_common_loop();
 
 #include <OneButton.h>
 
+typedef void (*button_handler)(void);
+
+class BoardButtons {
+private:
+  BoardButtons& PropagateHomieStatus(const String& value);
+  button_handler DefaultHandlerAction;
+
+public:
+  int _GPIO;
+  const char *_name;
+  button_handler _click_handler;
+  button_handler _doubleclick_handler;
+  button_handler _longclick_handler;
+  HomieNode *_HomieNodeptr;
+  OneButton *_oneButtonptr;
+
+};
+
 struct GPIO_button {
   int GPIO;
   const char *name;
@@ -42,16 +60,24 @@ void default_longclick_handler(void);
 #endif /*BOARD_BUTTONS*/
 
 #if BOARD_SWITCHES > 0
-struct GPIO_switch {
-  int GPIO;
-  const char *name;
-  bool (*relay_handler)(const HomieRange& range, const String& value);
-  HomieNode *HomieNodeptr;
+
+bool defaultRelayHandler(const HomieRange& range, const String& value);
+
+//typedef bool (RelayHandler)(const HomieRange& range, const String& value);
+
+class BoardSwitch {
+private:
+
+public:
+  int _GPIO;
+  const char *_name;
+  HomieNode _HomieNode;
+  BoardSwitch();
+  BoardSwitch(int GPIO, const char *name);
 };
 
-typedef struct GPIO_switch GPIO_switch;
-extern GPIO_switch switches[];
-bool defaultRelayHandler(const HomieRange& range, const String& value);
+
+extern BoardSwitch switches[];
 
 #endif /*BOARD_SWITCHES*/
 

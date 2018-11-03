@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "all_common.h"
 #include "all_common_log.h"
+#include "all_common_relay.h"
 
 #if defined(USERLIB_USE_WATCHDOG_WIFI)
 unsigned long watchdogLastFeed=999999;
@@ -28,8 +29,14 @@ void all_common_setup(){
         Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
 
 #if BOARD_SWITCHES > 0
-        for(int i=0; i<BOARD_SWITCHES; i++) {
-          
+//relay1.advertise("on").settable(relayOnHandler);
+        for(int _i=0; _i<BOARD_SWITCHES; _i++) {
+          switches[_i]._HomieNode.advertise("on").settable(
+                  [_i](const HomieRange& range, const String& value) -> bool {
+                  relaySwitch(switches[_i]._GPIO, value=="true" ? HIGH : LOW);
+                  switches[_i]._HomieNode.setProperty("on").send(value); return true;
+          });
+
         }
 #endif
 
@@ -75,6 +82,24 @@ void all_common_loop(){
 
 }
 
+#if BOARD_SWITCHES > 0
+BoardSwitch::BoardSwitch()
+        :  _GPIO(10)
+        , _name("switch")
+        , _HomieNode(HomieNode(this->_name, "switch"))
+{
+}
+
+BoardSwitch::BoardSwitch(int GPIO, const char *name)
+        :  _GPIO(GPIO)
+        , _name(name)
+        , _HomieNode(HomieNode(this->_name, "switch"))
+{
+//  this->_HomieNode.advertise("on").settable(*(this->RelayHandler));
+}
+
+#endif
+
 #if BOARD_BUTTONS > 0
 
 void null_function(void) {
@@ -113,6 +138,4 @@ void default_longclick_handler(void) {
                 }
         }
 }
-
-
 #endif

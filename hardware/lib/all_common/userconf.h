@@ -9,7 +9,7 @@
 #endif
 
 #if !defined(BOARD_SWITCHES)
-#define BOARD_SWITCHES 0
+#define BOARD_SWITCHES 1
 #endif
 
 #if !defined(USERLIB_USE_WATCHDOG_WIFI)
