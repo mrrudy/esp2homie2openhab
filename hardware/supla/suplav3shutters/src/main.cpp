@@ -1,14 +1,16 @@
 #include <Homie.h>
 #include <EEPROM.h>
 #include <Shutters.h>
+#include <functional>
+#include <vector>
 
 #include "main.h"
 
 #if BOARD_BUTTONS > 0
-GPIO_button buttons[BOARD_BUTTONS] = {
-        {BUTTONPIN1, "but1", shuttersMoveDownOrStop, null_function, null_function}
-        ,{BUTTONPIN2, "but2", shuttersMoveUpOrStop, null_function, null_function}
-        ,{BUTTONPIN3, "but3", shuttersMoveDownOrStop, shuttersMoveUpOrStop}
+BoardButton buttons[BOARD_BUTTONS] = {
+        {BoardButton(BUTTONPIN1, "but1", shuttersMoveDownOrStop)}
+        ,{BoardButton(BUTTONPIN2, "but2", shuttersMoveUpOrStop)}
+        ,{BoardButton(BUTTONPIN3, "but3", shuttersMoveDownOrStop, shuttersMoveUpOrStop)}
 };
 #endif
 
@@ -16,7 +18,7 @@ GPIO_button buttons[BOARD_BUTTONS] = {
 BoardSwitch switches[BOARD_SWITCHES]= {
         {BoardSwitch(UPRELAY, "lewy")}
         ,{BoardSwitch(DOWNRELAY, "prawy")}
-};  
+};
 
 #endif
 
