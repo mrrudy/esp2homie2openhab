@@ -77,7 +77,7 @@ void shuttersWriteStateHandler(Shutters* shutters, const char* state, byte lengt
 }
 
 void onShuttersLevelReached(Shutters* shutters, byte level) {
-        if(level%10==0) {
+        if(level%5==0) {
 //        Debugf("shutters reached level: %d %%", level);
                 blinds.setProperty("position").send(String(level)); //send the position
         }

@@ -103,10 +103,11 @@ BoardSwitch::BoardSwitch(int GPIO, const char *name)
 #if BOARD_BUTTONS > 0
 
 BoardButton& BoardButton::PropagateHomieStatus(const String& value){
-        return *this;
+      this->_HomieNode.setProperty("event").send(value);
+      return *this;
 };
 void BoardButton::DefaultHandlerAction(void){
-  Debug("Button %s No function on MC attached to me (i'm DefaultHandlerAction())");
+  Debug("No function on MC attached to me (i'm DefaultHandlerAction())");
 };
 
 BoardButton::BoardButton(int GPIO, const char *name, button_handler click_handler, button_handler doubleclick_handler, button_handler longclick_handler)
@@ -127,7 +128,7 @@ BoardButton::BoardButton(int GPIO, const char *name, button_handler click_handle
         _OneButton.attachClick(
                 (
                         [this](void) {
-                          this->_HomieNode.setProperty("event").send("click");
+                          this->PropagateHomieStatus("click");
                           this->_click_handler();
                           return;
                         }
@@ -136,7 +137,7 @@ BoardButton::BoardButton(int GPIO, const char *name, button_handler click_handle
         _OneButton.attachDoubleClick(
                 (
                         [this](void) {
-                          this->_HomieNode.setProperty("event").send("2click");
+                          this->PropagateHomieStatus("2click");
                           this->_doubleclick_handler();
                           return;
                         }
@@ -145,7 +146,7 @@ BoardButton::BoardButton(int GPIO, const char *name, button_handler click_handle
         _OneButton.attachLongPressStart(
                 (
                         [this](void) {
-                          this->_HomieNode.setProperty("event").send("longclick");
+                          this->PropagateHomieStatus("longclick");
                           this->_longclick_handler();
                           return;
                         }
