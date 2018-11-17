@@ -28,43 +28,12 @@ void all_common_setup(){
 #endif
         Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable this as it will reset your configuration when LOW
 
-#if BOARD_SWITCHES > 0
-//relay1.advertise("on").settable(relayOnHandler);
-        for(int _i=0; _i<BOARD_SWITCHES; _i++) {
-                switches[_i]._HomieNode.advertise("on").settable(
-                        [_i](const HomieRange& range, const String& value) -> bool {
-                        relaySwitch(switches[_i]._GPIO, value=="true" ? HIGH : LOW);
-                        switches[_i]._HomieNode.setProperty("on").send(value); return true;
-                });
-
-        }
-#endif
-
-
 #if defined(USERLIB_USE_WATCHDOG_WIFI)
         watchdogLastFeed=millis()+5*1000; //give setup some additional time, enought to run its magic
         Debugf("\n\rinitializing watchdog with margin: %lu, current time is: %lu\n\r", watchdogLastFeed, millis());
         watchdogTick.attach(10, ISRwatchdog);
 #endif /*USERLIB_USE_WATCHDOG_WIFI*/
 
-/*
-#if BOARD_BUTTONS > 0
-        for(int i=0; i<BOARD_BUTTONS; i++) {
-                buttons[i]._OneButton.attachClick(
-                        (
-                                [i](void) {
-                                  buttons[i]._HomieNode.setProperty("event").send("click");
-                                  buttons[i]._click_handler();
-                                  Debugf("Lambda click dla przycisku nr: %d", i);
-                                  return;
-                                }
-                        )
-                );
-                Debugf("Setting up button: %d", i);
-//                _OneButton.attachDoubleClick(default_doubleclick_handler);
-//                _OneButton.attachLongPressStart(default_longclick_handler);
-        }
-#endif */
         Homie.setup(); //needs to be after node declaraction if it is dynamic (new)
 }
 
@@ -84,18 +53,18 @@ void all_common_loop(){
 }
 
 #if BOARD_SWITCHES > 0
-BoardSwitch::BoardSwitch()
-        :  _GPIO(10)
-        , _name("defaultswitch")
-        , _HomieNode(HomieNode(this->_name, "switch"))
-{
-}
 
 BoardSwitch::BoardSwitch(int GPIO, const char *name)
         :  _GPIO(GPIO)
         , _name(name)
         , _HomieNode(HomieNode(this->_name, "switch"))
 {
+  _HomieNode.advertise("on").settable(
+          [this](const HomieRange& range, const String& value) -> bool {
+            relaySwitch(this->_GPIO, value=="true" ? HIGH : LOW);
+            this->_HomieNode.setProperty("on").send(value); return true;
+          }
+  );
 }
 
 #endif
@@ -154,8 +123,5 @@ BoardButton::BoardButton(int GPIO, const char *name, button_handler click_handle
         );
 }
 
-void null_function(void) {
-        Debug("No function on MC attached to me (i'm null_function())");
-}
 
 #endif

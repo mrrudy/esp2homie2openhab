@@ -21,7 +21,6 @@ void all_common_loop();
 #include <OneButton.h>
 
 typedef void (button_handler)(void);
-void null_function(void);
 
 class BoardButton {
 private:
@@ -55,7 +54,6 @@ public:
   int _GPIO;
   const char *_name;
   HomieNode _HomieNode;
-  BoardSwitch();
   BoardSwitch(int GPIO, const char *name);
 };
 
