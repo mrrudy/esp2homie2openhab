@@ -27,7 +27,7 @@ sitemap homie label="Kalinowa"
 	    Switch item=SypialniaRoleta visibility=[SypialniaRoleta_online==ON]
 	    Slider item=SypialniaRoleta visibility=[SypialniaRoleta_online==ON] 
 
-		Slider item=PiwnicaZawor_blinds icon="humidity" visibility=[PiwnicaZawor_online==ON] 
+		Slider item=PiwnicaZawor_blinds icon="heating" visibility=[PiwnicaZawor_online==ON] 
 		Text item=PiwnicaZawor_online icon="switch" visibility=[PiwnicaZawor_online==OFF]
 		
 		Switch item=SypialniaLampka icon="light" visibility=[SypialniaLampka_online==ON] 
@@ -45,7 +45,7 @@ sitemap homie label="Kalinowa"
 		Text label="Zawor 3dr config" icon="settings" {
 			Text item=PiwnicaZawor_name 
 			Text item=PiwnicaZawor_online icon="switch"
-			Switch item=PiwnicaZawor_blinds
+			Switch item=PiwnicaZawor_blinds icon="heating"
 			Text item=PiwnicaZawor_address
 		}
 
@@ -57,15 +57,23 @@ sitemap homie label="Kalinowa"
 	}
 	Frame label="WorkInProgress" {
 	
-	Selection item=Scene_Night label="‌‌Night scene" mappings=[0="Off", 1="Falling", 2="Sleep", 3="Deep Sleep", 4="Waking Up"]
 	
+			// ***** 1pietro_wykusz_biurko::dc4f22107450 ************** BEGIN *** .sitemap
+			
+			Text item=1pietro_wykusz_biurko_online icon="switch" visibility=[1pietro_wykusz_biurko_online==OFF]
+			Default item=1pietro_wykusz_biurko_roleta1 label="1pietro_wykusz_biurko->blinds->roleta1" visibility=[1pietro_wykusz_biurko_online==ON]
+			
+			Text item=1pietro_wykusz_biurko_name label="1pietro_wykusz_biurko config " icon="settings" visibility=[1pietro_wykusz_biurko_online==ON] {
+			  Slider item=1pietro_wykusz_biurko_roleta1
+			  Setpoint item=1pietro_wykusz_biurko_setting_courseTimeDOWN //minValue=1000 maxValue=60000 step=500
+			  Setpoint item=1pietro_wykusz_biurko_setting_courseTimeUP //minValue=1000 maxValue=60000 step=500
+			  Switch item=1pietro_wykusz_biurko_setting_reverseRelays 
+			}
+			
+			
+			// ***** 1pietro_wykusz_biurko::dc4f22107450 ************** END *** .sitemap
 
-		Text item=BiurkoRoleta_online icon="switch" visibility=[BiurkoRoleta_online==OFF]
-	    Switch item=BiurkoRoleta visibility=[BiurkoRoleta_online==ON]
-	    Slider item=BiurkoRoleta visibility=[BiurkoRoleta_online==ON] 
-	    Setpoint item=BiurkoRoleta_setting_courseTimeUP minValue=1000 maxValue=60000 step=500
-	    Setpoint item=BiurkoRoleta_setting_courseTimeDOWN minValue=0 maxValue=60000 step=500
-	    Switch item=BiurkoRoleta_setting_reverseRelays
+	Selection item=Scene_Night label="‌‌Night scene" mappings=[0="Off", 1="Falling", 2="Sleep", 3="Deep Sleep", 4="Waking Up"]
 
 
 	Text item=SypialniaLampkaButton1	

@@ -20,11 +20,11 @@ then
 	}
 end
 
-rule "Night sceen changes"
+rule "Night scene changes"
 when
 	Item Scene_Night received command
 then
-	logInfo("Debug","Received command is " + receivedCommand.toString() )
+	logInfo("Info","Received command is " + receivedCommand.toString() + "; a item.state: " +  Scene_Night.state)
 //mappings=[0="Off", 1="Falling", 2="Sleep", 3="Deep Sleep", 4="Waking Up"]
 	switch receivedCommand{
 		case 0:{

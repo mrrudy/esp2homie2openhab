@@ -104,32 +104,70 @@ Switch  sonoffcef_center_switch "relay" <switch> (Group1,Group2) {
 
 // ***** Zawor w piwnicy ************** END
 
-// ***** Roleta na biurku
 
-	String BiurkoRoleta_name "Device name: [%s]" { mqtt="<[nasmqtt:homie/dc4f22107450/$name:state:REGEX((.*))]" }
-	Switch BiurkoRoleta_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/dc4f22107450/$online:state:JS(homie-tf.js)"}
-	
-	Rollershutter BiurkoRoleta "blinds" (Group1, Group2) {
-		mqtt="
-			>[nasmqtt:homie/dc4f22107450/blinds1/position/set:command:*:default],
-			<[nasmqtt:homie/dc4f22107450/blinds1/position:state:default]
-			"
-	}
-	
-	Number BiurkoRoleta_setting_courseTimeUP	"UP course time (in ms) of the shutters: [%s]" {
-		mqtt="<[nasmqtt:homie/dc4f22107450/$implementation/config:state:JSONPATH($.settings.courseTimeUP)],
-			  >[nasmqtt:homie/dc4f22107450/$implementation/config/set:command:*:JS(homie-settings-courseTimeUP.js)]
-		"
-	}
-	Number BiurkoRoleta_setting_courseTimeDOWN	"DOWN course time (in ms) of the shutters: [%s]" {
-		mqtt="<[nasmqtt:homie/dc4f22107450/$implementation/config:state:JSONPATH($.settings.courseTimeDOWN)],
-			  >[nasmqtt:homie/dc4f22107450/$implementation/config/set:command:*:JS(homie-settings-courseTimeDOWN.js)]
-		"
-	}
-	String BiurkoRoleta_setting_reverseRelays	"Reverse the relays of shutters?" {
-		mqtt="<[nasmqtt:homie/dc4f22107450/$implementation/config:state:JS(homie-settings-reverseRelays-get.js)],
-			  >[nasmqtt:homie/dc4f22107450/$implementation/config/set:command:*:JS(homie-settings-reverseRelays.js)]
-		"
-	}
-	
-// ***** Roleta na biurku ************** END
+// ***** 1pietro_wykusz_biurko::dc4f22107450 ************** BEGIN *** .items
+
+  String 1pietro_wykusz_biurko_name "Device name: [%s]" (gNames) { mqtt="<[nasmqtt:homie/dc4f22107450/$name:state:REGEX((.*))]" }
+  Switch 1pietro_wykusz_biurko_online "Device online: [%s]" (gReachable) { mqtt="<[nasmqtt:homie/dc4f22107450/$online:state:JS(homie-tf.js)"}
+  String 1pietro_wykusz_biurko_but1 "1pietro_wykusz_biurko->button->but1" (gbutton, gHomieSensors) {
+    mqtt="<[nasmqtt:homie/dc4f22107450/but1/event:state:default]"
+  }
+  String 1pietro_wykusz_biurko_but2 "1pietro_wykusz_biurko->button->but2" (gbutton, gHomieSensors) {
+    mqtt="<[nasmqtt:homie/dc4f22107450/but2/event:state:default]"
+  }
+  String 1pietro_wykusz_biurko_but3 "1pietro_wykusz_biurko->button->but3" (gbutton, gHomieSensors) {
+    mqtt="<[nasmqtt:homie/dc4f22107450/but3/event:state:default]"
+  }
+  //!!! UNKNOWN SENSOR TYPE: switch YOU ARE ON YOUR OWN
+  String 1pietro_wykusz_biurko_lewy "1pietro_wykusz_biurko->switch->lewy" (gswitch, gHomieSensors) {
+    mqtt="<[nasmqtt:homie/dc4f22107450/lewy/event:state:default]"
+  }
+  //!!! UNKNOWN SENSOR TYPE: switch YOU ARE ON YOUR OWN
+  String 1pietro_wykusz_biurko_prawy "1pietro_wykusz_biurko->switch->prawy" (gswitch, gHomieSensors) {
+    mqtt="<[nasmqtt:homie/dc4f22107450/prawy/event:state:default]"
+  }
+  Rollershutter 1pietro_wykusz_biurko_roleta1 "1pietro_wykusz_biurko->blinds->roleta1" (gblinds, gHomieSensors) [ "Lighting" ] {
+    mqtt="
+      >[nasmqtt:homie/dc4f22107450/roleta1/position/set:command:*:default],
+      <[nasmqtt:homie/dc4f22107450/roleta1/position:state:default]
+      "
+  }
+      Number 1pietro_wykusz_biurko_setting_courseTimeDOWN "1pietro_wykusz_biurko->settings->courseTimeDOWN: [%s]" (gHomieSettings) {
+        mqtt="
+            <[nasmqtt:homie/dc4f22107450/$implementation/config:state:JSONPATH($.settings.courseTimeDOWN)],
+            >[nasmqtt:homie/dc4f22107450/$implementation/config/set:command:*:JS(homie-settings-courseTimeDOWN.js)]
+        "
+      }
+    /*********** TODO for U:
+    cat >> /etc/openhab2/transform/homie-settings-courseTimeDOWN.js
+    result = '{"settings":{"courseTimeDOWN":' + input + '}}';
+    ************/
+
+      Number 1pietro_wykusz_biurko_setting_courseTimeUP "1pietro_wykusz_biurko->settings->courseTimeUP: [%s]" (gHomieSettings) {
+        mqtt="
+            <[nasmqtt:homie/dc4f22107450/$implementation/config:state:JSONPATH($.settings.courseTimeUP)],
+            >[nasmqtt:homie/dc4f22107450/$implementation/config/set:command:*:JS(homie-settings-courseTimeUP.js)]
+        "
+      }
+    /*********** TODO for U:
+    cat >> /etc/openhab2/transform/homie-settings-courseTimeUP.js
+    result = '{"settings":{"courseTimeUP":' + input + '}}';
+    ************/
+
+      String 1pietro_wykusz_biurko_setting_reverseRelays "1pietro_wykusz_biurko->settings->reverseRelays?" (gHomieSettings) {
+        mqtt="
+            <[nasmqtt:homie/dc4f22107450/$implementation/config:state:JS(homie-settings-reverseRelays-get.js)],
+            >[nasmqtt:homie/dc4f22107450/$implementation/config/set:command:*:JS(homie-settings-reverseRelays.js)]
+        "
+      }
+    /*********** TODO for U:
+    cat >> /etc/openhab2/transform/homie-settings-reverseRelays.js
+    result = '{"settings":{"reverseRelays":' + ((input == "ON") ? "true" : "false") + '}}';
+
+    cat >> /etc/openhab2/transform/homie-settings-reverseRelays-get.js
+    result = ((JSON.parse(input)["settings"]["reverseRelays"]) == true ? "ON" : "OFF");
+    ************/
+
+
+// ***** 1pietro_wykusz_biurko::dc4f22107450 ************** END *** .items
+
