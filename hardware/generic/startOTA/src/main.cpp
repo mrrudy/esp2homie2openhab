@@ -2,7 +2,7 @@
 #include <Homie.h>
 #include "main.h"
 
-char _all_common_log_debugbuffer[150];
+//char _all_common_log_debugbuffer[150];
 
 void setup() {
 //        Homie.disableLogging();

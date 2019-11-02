@@ -39,17 +39,28 @@
 #endif
 
 #if BOARD_FAMILY_NAME==inCan
+#define LEDPIN 15
 #define LEFTRELAYPIN 5
 #define RIGHTRELAYPIN 13
 #define BUTTONPIN1 14
 #define BUTTONPIN2 12
 #define BUTTONPIN3 0
-#define LEDPIN 15
 #define LEFT HIGH       //left channel is NO and activated by HIGH
 #define RIGHT LOW
 #define LEDOFF HIGH
 #define LEDON LOW
 
-#endif /* inCan */
+ /* inCan */
+
+#else
+#if BOARD_FAMILY_NAME==esp01
+#define LEDPIN 2
+#define LEFTRELAYPIN 0
+#define BUTTONPIN1 1
+#define TXPIN 2
+#define RXPIN 3
+#endif /* esp01 */
+
+#endif
 
 #endif /* _USERCONF_H_ */

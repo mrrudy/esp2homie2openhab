@@ -22,6 +22,7 @@ void ICACHE_RAM_ATTR ISRwatchdog(void)
 
 
 void all_common_setup(){
+  Debugf("free heap: %d", ESP.getFreeHeap());
 
 
 #ifdef DEBUG_ENABLED
@@ -32,13 +33,15 @@ void all_common_setup(){
         Homie.disableLogging(); //there is a bug and if this is enabled you get a boot loop
 #endif
         Homie.disableResetTrigger();  //if you want to use GPIO0 you need to disable reset trigger as it will reset your configuration when LOW
+  Debugf("free heap: %d", ESP.getFreeHeap());
 
 #if USERLIB_USE_WATCHDOG_WIFI==true
         watchdogLastFeed=millis()+5*1000; //give setup some additional time, enought to run its magic
         Debugf("\n\rinitializing watchdog with margin: %lu, current time is: %lu\n\r", watchdogLastFeed, millis());
         watchdogTick.attach(10, ISRwatchdog);
 #endif /*USERLIB_USE_WATCHDOG_WIFI*/
-
+Debugf("free heap: %d", ESP.getFreeHeap());
+/*
         Homie_setFirmware(xstr(BOARD_FAMILY_NAME) xstr(BOARD_NAME) "-"
 #if BOARD_BUTTONS > 0
                           "B" xstr(BOARD_BUTTONS)
@@ -53,11 +56,14 @@ void all_common_setup(){
                           "WD"
 #endif
                           , xstr(VERSION));
-
+*/
+//Homie_setFirmware("dupa", "01");
+Homie_setFirmware(xstr(BOARD_FAMILY_NAME), xstr(VERSION));
         Homie.setup(); //needs to be after node declaraction if it is dynamic (new)
 }
 
 void all_common_loop(){
+        Homie.loop();
 #if USERLIB_USE_WATCHDOG_WIFI==true
         if(Homie.isConnected()) { watchdogLastFeed=millis(); }//if homie is connected feed the dog
 

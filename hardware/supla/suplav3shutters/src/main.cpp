@@ -1,8 +1,6 @@
-#include <Homie.h>
+#include "main.h"
 #include <functional>
 #include <vector>
-
-#include "main.h"
 
 #if BOARD_BUTTONS > 0
 BoardButton buttons[BOARD_BUTTONS] = {
@@ -37,14 +35,10 @@ void shuttersMoveUpOrStop(){
 
 void setup() {
 
-
-
-//########## HOMIE stuff
-
         all_common_setup();
 }
 
 void loop() {
         all_common_loop();
-        Homie.loop();
+
 }

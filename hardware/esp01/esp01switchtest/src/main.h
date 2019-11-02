@@ -1,6 +1,6 @@
 #define BOARD_NAME "esp01"
 #define BOARD_FUTURES "1REL_2BUT_OTA"
-#define VERSION "0.4"
+#define VERSION "0.88"
 
 
 #include "family_common_board.h"  //include/family_common/
